@@ -8,7 +8,7 @@ import java.nio.file.Paths;
 /**
  * @author 逍遥
  */
-public class TimeFlowTest {
+public class GeneratorCodeTest {
 
     public static void main(String[] args) {
         FastAutoGenerator.create("jdbc:mysql://117.72.82.38:3306/time_flow?useUnicode=true&characterEncoding=utf-8", "root", "root")
