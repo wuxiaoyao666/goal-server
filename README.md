@@ -6,7 +6,6 @@ create table record(
    start_time time not null comment '创建时间',
    end_time time comment '结束时间',
    today date not null comment '当天',
-   tag_id bigint comment '所属标签 ID',
    first_tag varchar(255) comment '一级标签',
    second_tag varchar(255) comment '二级标签'
 )comment '记录表';
@@ -24,6 +23,7 @@ insert into tag value (4,'社交',0);
 insert into tag value (5,'休息',0);
 
 insert into tag value (default,'社会工作',1);
+insert into tag value (default,'自研',1);
 insert into tag value (default,'阅读',2);
 insert into tag value (default,'课程',2);
 insert into tag value (default,'运动',3);

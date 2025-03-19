@@ -50,11 +50,6 @@ public class Record implements Serializable {
     private LocalDate today;
 
     /**
-     * 所属标签 ID
-     */
-    private Long tagId;
-
-    /**
      * 一级标签
      */
     private String firstTag;
