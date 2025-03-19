@@ -1,6 +1,5 @@
 package com.xiaoyao.flow.exception;
 
-import com.alibaba.fastjson2.JSON;
 import com.xiaoyao.flow.utils.Result;
 import com.xiaoyao.flow.utils.ResultCode;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @author 逍遥
@@ -30,13 +28,11 @@ public class TimeFlowException {
     // 参数校验异常处理
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Result<Map<String, String>> handleValidationException(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = ex.getBindingResult().getFieldErrors().stream()
-                .collect(Collectors.toMap(
-                        FieldError::getField,
-                        fieldError -> fieldError.getDefaultMessage() != null ?
-                                fieldError.getDefaultMessage() : "参数错误"
-                ));
-        return Result.fail(ResultCode.BAD_REQUEST.getCode(), JSON.toJSONString(errors));
+        StringBuilder sb = new StringBuilder();
+        for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
+            sb.append(fieldError.getField()).append(":").append(fieldError.getDefaultMessage()).append("\n");
+        }
+        return Result.fail(ResultCode.BAD_REQUEST.getCode(), sb.toString());
     }
 
     // 系统级异常处理

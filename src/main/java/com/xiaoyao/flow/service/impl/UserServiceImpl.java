@@ -10,7 +10,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xiaoyao.flow.utils.BcryptUtils;
 import com.xiaoyao.flow.utils.ResultCode;
 import com.xiaoyao.flow.vo.UserVo;
-import dto.LoginDTO;
+import com.xiaoyao.flow.dto.LoginDTO;
 import org.springframework.stereotype.Service;
 
 /**
@@ -28,11 +28,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     public UserVo login(LoginDTO param) {
         // 1. 查询用户
         LambdaQueryWrapper<User> wrapper = Wrappers.lambdaQuery(User.class)
-                .select(User::getId, User::getUsername)
+                .select(User::getId, User::getUsername,User::getPassword)
                 .eq(User::getUsername, param.getUsername());
         User user = getOne(wrapper);
-        // 2. 密码校验
-        if(!BcryptUtils.verify(param.getPassword(), user.getPassword())) {
+        // 2. 用户密码校验
+        if(user == null || !BcryptUtils.verify(param.getPassword(), user.getPassword())) {
             throw new BusinessException(ResultCode.USERNAME_PASSWORD_INVALID_EXCEPTION);
         }
         UserVo result = new UserVo();

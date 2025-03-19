@@ -1,4 +1,4 @@
-package dto;
+package com.xiaoyao.flow.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

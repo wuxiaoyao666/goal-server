@@ -1,7 +1,7 @@
 package com.xiaoyao.flow.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Controller;
  * @author 逍遥
  * @since 2025-03-18
  */
-@Controller
+@RestController
 @RequestMapping("/tag")
 public class TagController {
 

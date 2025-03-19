@@ -7,7 +7,10 @@ import com.xiaoyao.flow.utils.BcryptUtils;
  */
 public class PwdTest {
     public static void main(String[] args) {
-        String pwd = BcryptUtils.hash("senge520");
+        String plainPassword = "senge520";
+        String pwd = BcryptUtils.hash(plainPassword);
         System.out.println(pwd);
+        System.out.println(BcryptUtils.verify(plainPassword, pwd));
+        System.out.println(BcryptUtils.verify("sen", pwd));
     }
 }

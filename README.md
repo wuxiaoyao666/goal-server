@@ -33,10 +33,11 @@ create table user(
     id int primary key auto_increment comment '编号',
     username varchar(255) not null unique comment '用户名',
     password varchar(255) not null comment '密码',
+    nickname varchar(255) comment '昵称',
     sex tinyint not null comment '性别：1:男 2:女',
     phone varchar(11) not null unique comment '手机号',
     email varchar(50) unique comment '邮箱'
 )comment '用户表';
 
-insert into user value (default,'逍遥','$2a$12$/2XyzTJ2uqETGLW7xzeSZ.n5KSr8UHTDfKGMXaDyckIpjsfePr.Ki',1,'15822054833','1214166598@qq.com');
+insert into user value (default,'xiaoyao','$2a$12$/2XyzTJ2uqETGLW7xzeSZ.n5KSr8UHTDfKGMXaDyckIpjsfePr.Ki','逍遥',1,'15822054833','1214166598@qq.com');
 ```
