@@ -1,21 +1,27 @@
 # 数据库脚本
 ```sql
-create table record(
-   id bigint primary key auto_increment comment '唯一标识',
-   title varchar(255) not null comment '标题',
-   start_time time not null comment '创建时间',
-   end_time time comment '结束时间',
-   today date not null comment '当天',
-   first_tag varchar(255) comment '一级标签',
-   second_tag varchar(255) comment '二级标签'
-)comment '记录表';
+create table record
+(
+    id         bigint auto_increment comment '唯一标识'
+        primary key,
+    title      varchar(255) not null comment '标题',
+    start_time time         not null comment '创建时间',
+    end_time   time         null comment '结束时间',
+    today      date         not null comment '当天',
+    first_tag  varchar(255) null comment '一级标签',
+    second_tag varchar(255) null comment '二级标签',
+    status     tinyint      null comment '1: 记录中；2:已完成'
+)
+    comment '记录表';
 
-create table tag(
- id bigint primary key auto_increment comment '编号',
- name varchar(255) not null comment '名称',
- parent bigint default 0 comment '父标签'
-)comment '标签表';
-
+create table tag
+(
+    id     bigint auto_increment comment '编号'
+        primary key,
+    name   varchar(255)     not null comment '名称',
+    parent bigint default 0 null comment '父标签'
+)
+    comment '标签表';
 insert into tag value (1,'工作',0);
 insert into tag value (2,'学习',0);
 insert into tag value (3,'健康',0);
@@ -29,15 +35,22 @@ insert into tag value (default,'课程',2);
 insert into tag value (default,'运动',3);
 insert into tag value (default,'冥想',3);
 
-create table user(
-    id int primary key auto_increment comment '编号',
-    username varchar(255) not null unique comment '用户名',
+create table user
+(
+    id       int auto_increment comment '编号'
+        primary key,
+    username varchar(255) not null comment '用户名',
     password varchar(255) not null comment '密码',
-    nickname varchar(255) comment '昵称',
-    sex tinyint not null comment '性别：1:男 2:女',
-    phone varchar(11) not null unique comment '手机号',
-    email varchar(50) unique comment '邮箱'
+    nickname varchar(255) null comment '昵称',
+    sex      tinyint      not null comment '性别：1:男 2:女',
+    phone    varchar(11)  not null comment '手机号',
+    email    varchar(50)  null comment '邮箱',
+    constraint email
+        unique (email),
+    constraint phone
+        unique (phone),
+    constraint username
+        unique (username)
 )comment '用户表';
-
 insert into user value (default,'xiaoyao','$2a$12$/2XyzTJ2uqETGLW7xzeSZ.n5KSr8UHTDfKGMXaDyckIpjsfePr.Ki','逍遥',1,'15822054833','1214166598@qq.com');
 ```

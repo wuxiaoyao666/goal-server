@@ -1,6 +1,5 @@
 package com.xiaoyao.flow.service.impl;
 
-import com.xiaoyao.flow.entity.Record;
 import com.xiaoyao.flow.mapper.RecordMapper;
 import com.xiaoyao.flow.service.IRecordService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;

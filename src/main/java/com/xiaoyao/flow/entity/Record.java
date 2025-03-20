@@ -14,7 +14,7 @@ import lombok.ToString;
  * </p>
  *
  * @author 逍遥
- * @since 2025-03-18
+ * @since 2025-03-20
  */
 @Getter
 @Setter
@@ -58,4 +58,9 @@ public class Record implements Serializable {
      * 二级标签
      */
     private String secondTag;
+
+    /**
+     * 1: 记录中；2:已完成
+     */
+    private Byte status;
 }

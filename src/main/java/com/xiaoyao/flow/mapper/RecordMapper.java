@@ -1,6 +1,5 @@
 package com.xiaoyao.flow.mapper;
 
-import com.xiaoyao.flow.entity.Record;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
