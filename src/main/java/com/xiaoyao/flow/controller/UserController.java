@@ -1,10 +1,12 @@
 package com.xiaoyao.flow.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.dev33.satoken.stp.parameter.SaLoginParameter;
+import com.xiaoyao.flow.constant.TimeFlowConstant;
 import com.xiaoyao.flow.service.IUserService;
 import com.xiaoyao.flow.utils.Result;
-import com.xiaoyao.flow.vo.UserVo;
 import com.xiaoyao.flow.dto.LoginDTO;
+import com.xiaoyao.flow.vo.UserVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,9 +30,9 @@ public class UserController {
     private IUserService userService;
 
     @PostMapping("/login")
-    public Result<UserVo> login(@RequestBody @Validated LoginDTO param){
+    public Result login(@RequestBody @Validated LoginDTO param) {
         UserVo login = userService.login(param);
-        StpUtil.login(login.getId());
-        return Result.success(login);
+        StpUtil.login(login.getId(), new SaLoginParameter().setExtra(TimeFlowConstant.JwtUserInfo, login));
+        return Result.success(StpUtil.getTokenValue());
     }
 }

@@ -18,7 +18,7 @@
         <java.version>21</java.version>
         <jbrcypt.version>0.4</jbrcypt.version>
         <fastjson.version>2.0.56</fastjson.version>
-        <sa-token.version>1.40.0</sa-token.version>
+        <sa-token.version>1.41.0</sa-token.version>
         <mybatis-plus.version>3.5.10.1</mybatis-plus.version>
     </properties>
     <dependencies>
@@ -34,6 +34,11 @@
         <dependency>
             <groupId>cn.dev33</groupId>
             <artifactId>sa-token-spring-boot3-starter</artifactId>
+            <version>${sa-token.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-jwt</artifactId>
             <version>${sa-token.version}</version>
         </dependency>
         <dependency>

@@ -17,7 +17,6 @@ public interface IUserService extends IService<User> {
     /**
      * 用户登陆
      * @param param 登陆参数
-     * @return 登陆结果
      */
     UserVo login(LoginDTO param);
 }

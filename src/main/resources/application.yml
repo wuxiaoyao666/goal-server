@@ -6,4 +6,7 @@ spring:
     password: Senge520...
 sa-token:
   token-name: token
-  is-concurrent: true
+  # Jwt 密钥
+  jwt-secret-key: senge520
+  # 不写入 Cookie
+  is-read-cookie: false

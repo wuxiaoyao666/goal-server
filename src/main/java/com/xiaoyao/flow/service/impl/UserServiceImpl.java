@@ -11,6 +11,7 @@ import com.xiaoyao.flow.utils.BcryptUtils;
 import com.xiaoyao.flow.utils.ResultCode;
 import com.xiaoyao.flow.vo.UserVo;
 import com.xiaoyao.flow.dto.LoginDTO;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 /**
@@ -35,9 +36,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         if(user == null || !BcryptUtils.verify(param.getPassword(), user.getPassword())) {
             throw new BusinessException(ResultCode.USERNAME_PASSWORD_INVALID_EXCEPTION);
         }
-        UserVo result = new UserVo();
-        result.setId(user.getId());
-        result.setUsername(user.getUsername());
-        return result;
+        UserVo userVo = new UserVo();
+        BeanUtils.copyProperties(user, userVo);
+        return userVo;
     }
 }
