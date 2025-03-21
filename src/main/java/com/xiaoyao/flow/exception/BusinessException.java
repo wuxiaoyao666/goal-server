@@ -3,13 +3,9 @@ package com.xiaoyao.flow.exception;
 import com.xiaoyao.flow.utils.ResultCode;
 import lombok.Getter;
 
-import java.text.MessageFormat;
-
-/**
- * @author 逍遥
- */
 @Getter
-public class BusinessException extends RuntimeException{
+public class BusinessException extends RuntimeException {
+
     private final int code;
 
     private final Object data;

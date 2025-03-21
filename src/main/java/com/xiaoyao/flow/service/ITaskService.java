@@ -5,6 +5,8 @@ import com.xiaoyao.flow.dto.MobileCreateTaskDTO;
 import com.xiaoyao.flow.dto.MobileFinishTaskDTO;
 import com.xiaoyao.flow.entity.Task;
 
+import java.util.List;
+
 /**
  * <p>
  * 记录表 服务类
@@ -25,7 +27,13 @@ public interface ITaskService extends IService<Task> {
     /**
      * 移动端结束任务
      * @param param 参数
-     * @return 唯一 ID
+     * @return 时长
      */
-    void MobileFinishTask(MobileFinishTaskDTO param);
+    String MobileFinishTask(MobileFinishTaskDTO param);
+
+    /**
+     * 获取当前任务 ID
+     * @return 当前正在执行的
+     */
+    List<Task> getCurrentTaskId();
 }

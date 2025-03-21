@@ -6,3 +6,4 @@ spring:
     password: Senge520...
 sa-token:
   token-name: token
+  is-concurrent: true
