@@ -27,7 +27,7 @@ public class TaskMobileController {
         return Result.success(taskService.MobileFinishTask(body));
     }
 
-    @GetMapping("/getCurrentTaskId")
+    @GetMapping("/getCurrentTask")
     public Result getCurrentTaskId(){
         return Result.success(taskService.getCurrentTaskId());
     }
