@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2025-03-18
  */
 @RestController
-@RequestMapping("/record")
-public class RecordController {
+@RequestMapping("/task")
+public class TaskController {
 
 }

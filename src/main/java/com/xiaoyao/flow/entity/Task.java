@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
+
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -18,8 +20,9 @@ import lombok.ToString;
  */
 @Getter
 @Setter
+@Builder
 @ToString
-public class Record implements Serializable {
+public class Task implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -63,4 +66,9 @@ public class Record implements Serializable {
      * 1: 记录中；2:已完成
      */
     private Byte status;
+
+    /**
+     * 平台: 1: PC 端；2:移动端
+     */
+    private Byte platform;
 }

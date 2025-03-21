@@ -21,6 +21,10 @@ public class Result<T> {
      */
     private String message;
 
+    public static <T> Result<T> success() {
+        return success(null);
+    }
+
     public static <T> Result<T> success(T data) {
         Result<T> result = new Result<>();
         result.setCode(ResultCode.SUCCESS.getCode());

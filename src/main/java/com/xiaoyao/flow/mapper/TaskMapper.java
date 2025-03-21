@@ -1,6 +1,7 @@
 package com.xiaoyao.flow.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.xiaoyao.flow.entity.Task;
 import org.apache.ibatis.annotations.Mapper;
 
 
@@ -13,7 +14,7 @@ import org.apache.ibatis.annotations.Mapper;
  * @since 2025-03-18
  */
 @Mapper
-public interface RecordMapper extends BaseMapper<Record> {
+public interface TaskMapper extends BaseMapper<Task> {
 
 }
 
