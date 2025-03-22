@@ -1,5 +1,6 @@
 package com.xiaoyao.flow.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.stp.parameter.SaLoginParameter;
 import com.xiaoyao.flow.constant.TimeFlowConstant;
@@ -9,10 +10,7 @@ import com.xiaoyao.flow.dto.LoginDTO;
 import com.xiaoyao.flow.vo.UserVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -34,5 +32,11 @@ public class UserController {
         UserVo login = userService.login(param);
         StpUtil.login(login.getId(), new SaLoginParameter().setExtra(TimeFlowConstant.JwtUserInfo, login));
         return Result.success(StpUtil.getTokenValue());
+    }
+
+    @SaCheckLogin
+    @GetMapping("/info")
+    public Result info() {
+        return Result.success(StpUtil.getExtra(TimeFlowConstant.JwtUserInfo));
     }
 }

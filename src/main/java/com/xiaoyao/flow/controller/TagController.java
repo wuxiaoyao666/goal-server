@@ -1,5 +1,9 @@
 package com.xiaoyao.flow.controller;
 
+import com.xiaoyao.flow.service.ITagService;
+import com.xiaoyao.flow.utils.Result;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,4 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/tag")
 public class TagController {
 
+    @Autowired
+    private ITagService tagService;
+
+    @GetMapping("tree")
+    public Result tree(){
+        return Result.success(tagService.tree());
+    }
 }

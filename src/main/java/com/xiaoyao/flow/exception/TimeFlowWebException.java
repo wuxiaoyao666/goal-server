@@ -26,7 +26,7 @@ public class TimeFlowWebException {
     @ExceptionHandler(Exception.class)
     public Result<Void> handleGlobalException(Exception e) {
         if (e instanceof NotLoginException) {
-            return Result.fail(ResultCode.NOT_LOGIN.getCode(), ResultCode.NOT_LOGIN.getMessage());
+            return Result.fail(ResultCode.NOT_LOGIN);
         } else if (e instanceof BusinessException be) {
             return Result.fail(be.getCode(), be.getMessage());
         } else if (e instanceof MethodArgumentNotValidException ex) {
@@ -34,7 +34,7 @@ public class TimeFlowWebException {
             for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
                 sb.append(fieldError.getField()).append(":").append(fieldError.getDefaultMessage()).append("\n");
             }
-            return Result.fail(ResultCode.BAD_REQUEST.getCode(), sb.toString());
+            return Result.fail(ResultCode.SERVER_ERROR.getCode(), sb.toString());
         } else if (e instanceof TimeFlowException ex) {
             return Result.fail(ex.getMessage());
         }

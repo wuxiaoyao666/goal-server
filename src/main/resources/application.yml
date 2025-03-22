@@ -10,3 +10,5 @@ sa-token:
   jwt-secret-key: senge520
   # 不写入 Cookie
   is-read-cookie: false
+system:
+  cors-enable: true # 是否开启跨域

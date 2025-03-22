@@ -43,6 +43,7 @@ create table user
     username varchar(255) not null comment '用户名',
     password varchar(255) not null comment '密码',
     nickname varchar(255) null comment '昵称',
+    avatar varchar(255) null comment '头像',
     sex      tinyint      not null comment '性别：1:男 2:女',
     phone    varchar(11)  not null comment '手机号',
     email    varchar(50)  null comment '邮箱',
@@ -53,5 +54,5 @@ create table user
     constraint username
         unique (username)
 )comment '用户表';
-insert into user value (default,'xiaoyao','$2a$12$/2XyzTJ2uqETGLW7xzeSZ.n5KSr8UHTDfKGMXaDyckIpjsfePr.Ki','逍遥',1,'15822054833','1214166598@qq.com');
+insert into user value (default,'xiaoyao','$2a$12$/2XyzTJ2uqETGLW7xzeSZ.n5KSr8UHTDfKGMXaDyckIpjsfePr.Ki','逍遥','https://pic1.imgdb.cn/item/675533b5d0e0a243d4dfdff8.webp',1,'15822054833','1214166598@qq.com');
 ```

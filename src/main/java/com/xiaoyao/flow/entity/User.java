@@ -44,6 +44,11 @@ public class User implements Serializable {
     private String nickname;
 
     /**
+     * 头像
+     */
+    private String avatar;
+
+    /**
      * 性别：1:男 2:女
      */
     private Byte sex;

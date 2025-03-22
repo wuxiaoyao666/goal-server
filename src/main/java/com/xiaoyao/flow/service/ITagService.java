@@ -2,6 +2,9 @@ package com.xiaoyao.flow.service;
 
 import com.xiaoyao.flow.entity.Tag;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.xiaoyao.flow.vo.TagVO;
+
+import java.util.List;
 
 /**
  * <p>
@@ -12,5 +15,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2025-03-18
  */
 public interface ITagService extends IService<Tag> {
-
+    /**
+     * 树形菜单返回 Tag
+     * @return List<TagVO>
+     */
+    List<TagVO> tree();
 }

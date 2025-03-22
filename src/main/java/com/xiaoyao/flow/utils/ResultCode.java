@@ -12,7 +12,8 @@ public enum ResultCode {
     UNAUTHORIZED(401, "身份未知"),
     USERNAME_PASSWORD_INVALID_EXCEPTION(402, "用户名或密码错误"),
     SERVER_ERROR(500, "服务异常"),
-    NOT_LOGIN(10001, "登录已过期，请重新登录");
+    NOT_LOGIN(10001, "登录已过期，请重新登录"),
+    SAVE_FAIL(10002, "保存失败");
 
     private final int code;
     private final String message;

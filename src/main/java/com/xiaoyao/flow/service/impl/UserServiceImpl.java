@@ -29,11 +29,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     public UserVo login(LoginDTO param) {
         // 1. 查询用户
         LambdaQueryWrapper<User> wrapper = Wrappers.lambdaQuery(User.class)
-                .select(User::getId, User::getUsername,User::getPassword)
+                .select(User::getId, User::getUsername, User::getPassword, User::getNickname, User::getAvatar)
                 .eq(User::getUsername, param.getUsername());
         User user = getOne(wrapper);
         // 2. 用户密码校验
-        if(user == null || !BcryptUtils.verify(param.getPassword(), user.getPassword())) {
+        if (user == null || !BcryptUtils.verify(param.getPassword(), user.getPassword())) {
             throw new BusinessException(ResultCode.USERNAME_PASSWORD_INVALID_EXCEPTION);
         }
         UserVo userVo = new UserVo();

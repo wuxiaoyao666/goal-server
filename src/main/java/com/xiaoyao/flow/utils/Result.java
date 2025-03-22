@@ -37,6 +37,10 @@ public class Result<T> {
         return fail(ResultCode.SERVER_ERROR.getCode(),message);
     }
 
+    public static <T> Result<T> fail(ResultCode resultCode) {
+        return fail(resultCode.getCode(),resultCode.getMessage());
+    }
+
     public static <T> Result<T> fail(int code, String message) {
         Result<T> result = new Result<>();
         result.setCode(code);
