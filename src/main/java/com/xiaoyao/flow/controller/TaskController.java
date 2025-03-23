@@ -3,6 +3,7 @@ package com.xiaoyao.flow.controller;
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.xiaoyao.flow.entity.dto.CreateTaskDTO;
 import com.xiaoyao.flow.entity.dto.FinishTaskDTO;
+import com.xiaoyao.flow.entity.dto.QueryTaskDTO;
 import com.xiaoyao.flow.entity.dto.RetrospectiveDTO;
 import com.xiaoyao.flow.entity.Task;
 import com.xiaoyao.flow.service.ITaskService;
@@ -31,6 +32,11 @@ public class TaskController {
     @PostMapping("saveOrUpdate")
     public Result saveOrUpdate(@RequestBody Task body) {
         return taskService.saveOrUpdate(body) ? Result.success() : Result.fail(ResultCode.SAVE_FAIL);
+    }
+
+    @PostMapping("/page")
+    public Result page(@RequestBody @Validated QueryTaskDTO body) {
+        return Result.success(taskService.page(body));
     }
 
     @PostMapping("/retrospective")

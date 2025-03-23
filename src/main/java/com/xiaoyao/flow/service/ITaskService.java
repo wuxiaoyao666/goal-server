@@ -1,9 +1,11 @@
 package com.xiaoyao.flow.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.xiaoyao.flow.entity.bo.TimeBO;
 import com.xiaoyao.flow.entity.dto.CreateTaskDTO;
 import com.xiaoyao.flow.entity.dto.FinishTaskDTO;
+import com.xiaoyao.flow.entity.dto.QueryTaskDTO;
 import com.xiaoyao.flow.entity.dto.RetrospectiveDTO;
 import com.xiaoyao.flow.entity.Task;
 import com.xiaoyao.flow.entity.vo.RetrospectiveVO;
@@ -27,6 +29,13 @@ public interface ITaskService extends IService<Task> {
      * @return 唯一 ID
      */
     Long createTask(CreateTaskDTO param);
+
+    /**
+     * 分页查询 Task
+     * @param param 参数
+     * @return 分页数据
+     */
+    IPage<Task> page(QueryTaskDTO param);
 
     /**
      * 移动端结束任务

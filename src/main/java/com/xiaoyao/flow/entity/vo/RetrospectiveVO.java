@@ -15,17 +15,17 @@ public class RetrospectiveVO {
     /**
      * 占用时间最长的一集标题
      */
-    private RetrospectiveFirstTagVO maxDurationPrimary;
+    private MaxDurationTagVO maxDurationPrimary;
 
     /**
      * 占用时间最长的二级标题
      */
-    private RetrospectiveSecondTagVO maxDurationSecond;
+    private MaxDurationTagVO maxDurationSecond;
 
     /**
      * 复盘
      */
-    private List<RetrospectiveFirstTagVO> tagTime;
+    private List<RetrospectiveRowVO> tagTime;
 
     /**
      * 总时长（单位：秒）

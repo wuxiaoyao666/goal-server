@@ -1,14 +1,18 @@
 package com.xiaoyao.flow.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xiaoyao.flow.constant.TimeFlowConstant;
 import com.xiaoyao.flow.entity.bo.TimeBO;
 import com.xiaoyao.flow.entity.dto.CreateTaskDTO;
 import com.xiaoyao.flow.entity.dto.FinishTaskDTO;
+import com.xiaoyao.flow.entity.dto.QueryTaskDTO;
 import com.xiaoyao.flow.entity.dto.RetrospectiveDTO;
 import com.xiaoyao.flow.entity.Task;
-import com.xiaoyao.flow.entity.vo.RetrospectiveFirstTagVO;
+import com.xiaoyao.flow.entity.vo.MaxDurationTagVO;
+import com.xiaoyao.flow.entity.vo.RetrospectiveRowVO;
 import com.xiaoyao.flow.enums.Platform;
 import com.xiaoyao.flow.enums.TaskStatus;
 import com.xiaoyao.flow.exception.TimeFlowException;
@@ -16,7 +20,6 @@ import com.xiaoyao.flow.mapper.TaskMapper;
 import com.xiaoyao.flow.service.ITaskService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xiaoyao.flow.utils.TimeUtils;
-import com.xiaoyao.flow.entity.vo.RetrospectiveSecondTagVO;
 import com.xiaoyao.flow.entity.vo.RetrospectiveVO;
 import org.springframework.stereotype.Service;
 
@@ -53,6 +56,18 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
                 .platform(param.getPlatform()).build();
         save(task);
         return task.getId();
+    }
+
+    @Override
+    public IPage<Task> page(QueryTaskDTO param) {
+        Page page = new Page<>(param.getCurrent(), param.getLimit());
+        LambdaQueryWrapper<Task> wrapper = Wrappers.lambdaQuery(Task.class)
+                .between(Task::getStartDate, param.getStartDate(), param.getFinishDate())
+                .eq(Task::getStatus, param.getStatus())
+                .eq(Task::getFirstTag, param.getFirstTag())
+                .eq(Task::getSecondTag, param.getSecondTag());
+        if (param.getPlatform() != null) wrapper.eq(Task::getPlatform, param.getPlatform());
+        return page(page, wrapper);
     }
 
     @Override
@@ -96,72 +111,94 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
             wrapper.eq(Task::getPlatform, param.getPlatform());
         }
         List<Task> tasks = list(wrapper);
-        // 2. 统计二级标签时长
         Map<String, FirstTagData> firstTagMap = new HashMap<>();
+        Map<String, Long> globalSecondTagTotalMap = new HashMap<>(); // 全局子标签总时长
         long totalSeconds = 0L;
-        RetrospectiveSecondTagVO maxSecondaryTag = null;
         for (Task task : tasks) {
-            // 计算耗时（秒）
+            // 计算任务时长
             LocalDateTime start = LocalDateTime.of(task.getStartDate(), task.getStartTime());
             LocalDateTime end = LocalDateTime.of(task.getFinishDate(), task.getFinishTime());
             long durationSeconds = Duration.between(start, end).getSeconds();
             totalSeconds += durationSeconds;
 
-            // 实时更新最长二级标签（无需后续遍历）
-            if (maxSecondaryTag == null || durationSeconds > maxSecondaryTag.getTotalSeconds()) {
-                maxSecondaryTag = new RetrospectiveSecondTagVO(
-                        task.getId(),
-                        Optional.ofNullable(task.getSecondTag()).orElse(TimeFlowConstant.NoTag),
-                        task.getTitle(),
-                        durationSeconds
-                );
+            // 获取主标签和子标签名称（处理空值）
+            String firstTag = Optional.ofNullable(task.getFirstTag()).orElse(TimeFlowConstant.NoTag);
+            String secondTag = Optional.ofNullable(task.getSecondTag()).orElse(TimeFlowConstant.NoTag);
+
+            // 聚合主标签数据
+            FirstTagData firstTagData = firstTagMap.computeIfAbsent(firstTag, k -> new FirstTagData());
+
+            // 合并同名子标签并累加时长
+            firstTagData.secondTagMap.merge(
+                    secondTag,
+                    durationSeconds,
+                    Long::sum
+            );
+
+            // 更新全局子标签总时长（用于最终的最长子标签统计）
+            globalSecondTagTotalMap.merge(secondTag, durationSeconds, Long::sum);
+        }
+
+        // 3. 生成扁平化表格数据
+        List<RetrospectiveRowVO> flatRows = new ArrayList<>();
+        MaxDurationTagVO maxPrimaryTag = null;
+        MaxDurationTagVO maxSecondaryTag = null;
+
+        for (Map.Entry<String, FirstTagData> entry : firstTagMap.entrySet()) {
+            String firstTag = entry.getKey();
+            FirstTagData firstTagData = entry.getValue();
+            long firstTotalSeconds = firstTagData.getTotalSeconds();
+
+            // 动态更新最长主标签
+            if (maxPrimaryTag == null || firstTotalSeconds > maxPrimaryTag.getTotalSeconds()) {
+                maxPrimaryTag = new MaxDurationTagVO(firstTag, firstTotalSeconds);
             }
 
-            // 聚合一级标签数据
-            String firstTag = Optional.ofNullable(task.getFirstTag()).orElse(TimeFlowConstant.NoTag);
-            firstTagMap.computeIfAbsent(firstTag, k -> new FirstTagData())
-                    .addData(maxSecondaryTag, durationSeconds);  // 直接复用已创建的VO
-        }
-        // 3. 生成完整复盘
-        List<RetrospectiveFirstTagVO> tagTime = new ArrayList<>();
-        RetrospectiveFirstTagVO maxPrimaryTag = null;
-        for (Map.Entry<String, FirstTagData> entry : firstTagMap.entrySet()) {
-            String firstTagTitle = entry.getKey();
-            FirstTagData data = entry.getValue();
-
-            // 直接使用秒数构建VO（无需TimeBO转换）
-            RetrospectiveFirstTagVO primaryVO = new RetrospectiveFirstTagVO(
-                    firstTagTitle,
-                    data.secondTagList,
-                    data.totalSeconds
+            // 将子标签 Map 转换为列表（已合并同名项）
+            List<Map.Entry<String, Long>> secondTagEntries = new ArrayList<>(
+                    firstTagData.secondTagMap.entrySet()
             );
-            tagTime.add(primaryVO);
 
-            // 动态比较最长一级标签
-            if (maxPrimaryTag == null || data.totalSeconds > maxPrimaryTag.getTotalSeconds()) {
-                maxPrimaryTag = new RetrospectiveFirstTagVO(
-                        firstTagTitle,
-                        null,
-                        data.totalSeconds
-                );
+            // 生成合并行数据
+            int rowspan = secondTagEntries.size();
+            for (int i = 0; i < rowspan; i++) {
+                Map.Entry<String, Long> secondTagEntry = secondTagEntries.get(i);
+                String secondTag = secondTagEntry.getKey();
+                long secondTotalSeconds = secondTagEntry.getValue();
+
+                RetrospectiveRowVO row = new RetrospectiveRowVO();
+                row.setFirstTag(firstTag);
+                if (i == 0) {
+                    row.setRowspan(rowspan);
+                    row.setFirstTotalSeconds(firstTotalSeconds);
+                }
+                row.setSecondTag(secondTag);
+                row.setSecondTotalSeconds(secondTotalSeconds);
+                flatRows.add(row);
+
+                // 动态更新最长子标签（从全局统计获取）
+                long globalSecondTotal = globalSecondTagTotalMap.get(secondTag);
+                if (maxSecondaryTag == null || globalSecondTotal > maxSecondaryTag.getTotalSeconds()) {
+                    maxSecondaryTag = new MaxDurationTagVO(secondTag, globalSecondTotal);
+                }
             }
         }
         // 4. 构建返回结果
         return RetrospectiveVO.builder()
-                .tagTime(tagTime)
+                .tagTime(flatRows)
                 .maxDurationPrimary(maxPrimaryTag)
                 .maxDurationSecond(maxSecondaryTag)
                 .totalSeconds(totalSeconds)
                 .build();
     }
 
+    // 主标签聚合数据（内部类）
     private static class FirstTagData {
-        private long totalSeconds;
-        private final List<RetrospectiveSecondTagVO> secondTagList = new ArrayList<>();
+        // Key: 子标签名称, Value: 总时长
+        private final Map<String, Long> secondTagMap = new HashMap<>();
 
-        public void addData(RetrospectiveSecondTagVO vo, long durationSeconds) {
-            this.totalSeconds += durationSeconds;
-            this.secondTagList.add(vo);
+        public long getTotalSeconds() {
+            return secondTagMap.values().stream().mapToLong(Long::longValue).sum();
         }
     }
 }
