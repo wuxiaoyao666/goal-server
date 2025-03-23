@@ -34,8 +34,10 @@ insert into tag value (default,'社会工作',1);
 insert into tag value (default,'自研',1);
 insert into tag value (default,'阅读',2);
 insert into tag value (default,'课程',2);
-insert into tag value (default,'运动',3);
+insert into tag value (default,'无氧',3);
 insert into tag value (default,'冥想',3);
+insert into tag value (default,'跑步',3);
+insert into tag value (default,'骑行',3);
 
 create table user
 (
