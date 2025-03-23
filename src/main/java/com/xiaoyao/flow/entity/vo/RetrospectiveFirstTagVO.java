@@ -1,6 +1,5 @@
 package com.xiaoyao.flow.entity.vo;
 
-import com.xiaoyao.flow.entity.bo.TimeBO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
