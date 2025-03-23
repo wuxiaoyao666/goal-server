@@ -2,7 +2,7 @@ package com.xiaoyao.flow.service;
 
 import com.xiaoyao.flow.entity.Tag;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.xiaoyao.flow.vo.TagVO;
+import com.xiaoyao.flow.entity.vo.TagVO;
 
 import java.util.List;
 

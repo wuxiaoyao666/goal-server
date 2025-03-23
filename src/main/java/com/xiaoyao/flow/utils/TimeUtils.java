@@ -1,5 +1,7 @@
 package com.xiaoyao.flow.utils;
 
+import com.xiaoyao.flow.entity.bo.TimeBO;
+
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -7,11 +9,12 @@ public class TimeUtils {
 
     /**
      * 计算耗时
+     *
      * @param startDateTime 开始时间
-     * @param endDateTime 结束时间
+     * @param endDateTime   结束时间
      * @return 耗时
      */
-    public static String calculateDuration(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+    public static TimeBO calculateDuration(LocalDateTime startDateTime, LocalDateTime endDateTime) {
 
         // 计算天数差（跨天则补 24 小时）
         long daysDiff = ChronoUnit.DAYS.between(startDateTime, endDateTime);
@@ -34,6 +37,30 @@ public class TimeUtils {
         long minutes = (totalSeconds % 3600) / 60;
         long seconds = totalSeconds % 60;
 
-        return String.format("%d 时 %d 分 %d 秒", hours, minutes, seconds);
+        return new TimeBO(hours, minutes, seconds);
+    }
+
+    /**
+     * 秒 转 TimeBO
+     *
+     * @param totalSeconds 总秒数
+     * @return TimeBO
+     */
+    public static TimeBO convertSecondsToTimeBO(long totalSeconds) {
+        long hours = totalSeconds / 3600;
+        long remainingSeconds = totalSeconds % 3600;
+        long minutes = remainingSeconds / 60;
+        long seconds = remainingSeconds % 60;
+        return new TimeBO(hours, minutes, seconds);
+    }
+
+    /**
+     * TimeBO 转 秒
+     *
+     * @param timeBO TimeBO
+     * @return 秒
+     */
+    public static long convertTimeBOToSeconds(TimeBO timeBO) {
+        return timeBO.getHours() * 3600 + timeBO.getMinutes() * 60 + timeBO.getSeconds();
     }
 }

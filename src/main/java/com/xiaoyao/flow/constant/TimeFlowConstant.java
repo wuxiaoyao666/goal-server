@@ -5,4 +5,5 @@ package com.xiaoyao.flow.constant;
  */
 public class TimeFlowConstant {
     public static final String JwtUserInfo = "userInfo";
+    public static final String NoTag = "未分类";
 }

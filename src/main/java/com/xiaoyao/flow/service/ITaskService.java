@@ -1,9 +1,12 @@
 package com.xiaoyao.flow.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.xiaoyao.flow.dto.MobileCreateTaskDTO;
-import com.xiaoyao.flow.dto.MobileFinishTaskDTO;
+import com.xiaoyao.flow.entity.bo.TimeBO;
+import com.xiaoyao.flow.entity.dto.CreateTaskDTO;
+import com.xiaoyao.flow.entity.dto.FinishTaskDTO;
+import com.xiaoyao.flow.entity.dto.RetrospectiveDTO;
 import com.xiaoyao.flow.entity.Task;
+import com.xiaoyao.flow.entity.vo.RetrospectiveVO;
 
 import java.util.List;
 
@@ -19,21 +22,32 @@ public interface ITaskService extends IService<Task> {
 
     /**
      * 移动端插入任务
+     *
      * @param param 参数
      * @return 唯一 ID
      */
-    Long MobileSaveTask(MobileCreateTaskDTO param);
+    Long createTask(CreateTaskDTO param);
 
     /**
      * 移动端结束任务
+     *
      * @param param 参数
      * @return 时长
      */
-    String MobileFinishTask(MobileFinishTaskDTO param);
+    TimeBO finishTask(FinishTaskDTO param);
 
     /**
      * 获取当前任务 ID
+     *
      * @return 当前正在执行的
      */
     List<Task> getCurrentTaskId();
+
+    /**
+     * 复盘
+     *
+     * @param param form 传递的参数
+     * @return 复盘记录
+     */
+    RetrospectiveVO retrospective(RetrospectiveDTO param);
 }

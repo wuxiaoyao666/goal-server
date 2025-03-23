@@ -40,19 +40,25 @@ public class Task implements Serializable {
     private String title;
 
     /**
+     * 当日
+     */
+    private LocalDate startDate;
+
+    /**
      * 创建时间
      */
     private LocalTime startTime;
 
     /**
-     * 结束时间
+     * 完成日
      */
-    private LocalTime endTime;
+    private LocalDate finishDate;
 
     /**
-     * 当天
+     * 完成时间
      */
-    private LocalDate today;
+    private LocalTime finishTime;
+
 
     /**
      * 一级标签
@@ -65,7 +71,7 @@ public class Task implements Serializable {
     private String secondTag;
 
     /**
-     * 1: 记录中；2:已完成
+     * 1: 记录中；2:已完成 3: 不统计
      */
     private Byte status;
 

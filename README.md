@@ -5,13 +5,14 @@ create table task
     id         bigint auto_increment comment '唯一标识'
         primary key,
     title      varchar(255) not null comment '标题',
+    start_date date         not null comment '当日',
     start_time time         not null comment '创建时间',
+    end_date   date         null comment '结束日',
     end_time   time         null comment '结束时间',
-    today      date         not null comment '当天',
     first_tag  varchar(255) null comment '一级标签',
     second_tag varchar(255) null comment '二级标签',
     status     tinyint      null comment '1: 记录中；2:已完成',
-    platform   tinyint not null comment '平台: 1: PC 端；2:移动端'
+    platform   tinyint      not null comment '平台: 1: PC 端；2:移动端'
 )
     comment '记录表';
 

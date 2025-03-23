@@ -1,4 +1,4 @@
-package com.xiaoyao.flow.vo;
+package com.xiaoyao.flow.entity.vo;
 
 import lombok.Data;
 

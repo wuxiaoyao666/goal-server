@@ -9,8 +9,8 @@ import com.xiaoyao.flow.service.IUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xiaoyao.flow.utils.BcryptUtils;
 import com.xiaoyao.flow.utils.ResultCode;
-import com.xiaoyao.flow.vo.UserVo;
-import com.xiaoyao.flow.dto.LoginDTO;
+import com.xiaoyao.flow.entity.vo.UserVo;
+import com.xiaoyao.flow.entity.dto.LoginDTO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 

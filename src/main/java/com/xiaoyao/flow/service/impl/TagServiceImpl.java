@@ -4,7 +4,7 @@ import com.xiaoyao.flow.entity.Tag;
 import com.xiaoyao.flow.mapper.TagMapper;
 import com.xiaoyao.flow.service.ITagService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.xiaoyao.flow.vo.TagVO;
+import com.xiaoyao.flow.entity.vo.TagVO;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

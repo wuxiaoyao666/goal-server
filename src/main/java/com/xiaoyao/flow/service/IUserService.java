@@ -2,8 +2,8 @@ package com.xiaoyao.flow.service;
 
 import com.xiaoyao.flow.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.xiaoyao.flow.vo.UserVo;
-import com.xiaoyao.flow.dto.LoginDTO;
+import com.xiaoyao.flow.entity.vo.UserVo;
+import com.xiaoyao.flow.entity.dto.LoginDTO;
 
 /**
  * <p>
