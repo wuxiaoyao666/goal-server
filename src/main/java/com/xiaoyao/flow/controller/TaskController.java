@@ -5,10 +5,8 @@ import com.xiaoyao.flow.entity.dto.CreateTaskDTO;
 import com.xiaoyao.flow.entity.dto.FinishTaskDTO;
 import com.xiaoyao.flow.entity.dto.QueryTaskDTO;
 import com.xiaoyao.flow.entity.dto.RetrospectiveDTO;
-import com.xiaoyao.flow.entity.Task;
 import com.xiaoyao.flow.service.ITaskService;
 import com.xiaoyao.flow.utils.Result;
-import com.xiaoyao.flow.utils.ResultCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -28,11 +26,6 @@ public class TaskController {
 
     @Autowired
     private ITaskService taskService;
-
-    @PostMapping("saveOrUpdate")
-    public Result saveOrUpdate(@RequestBody Task body) {
-        return taskService.saveOrUpdate(body) ? Result.success() : Result.fail(ResultCode.SAVE_FAIL);
-    }
 
     @PostMapping("/page")
     public Result page(@RequestBody @Validated QueryTaskDTO body) {

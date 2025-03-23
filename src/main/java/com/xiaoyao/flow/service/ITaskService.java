@@ -23,7 +23,7 @@ import java.util.List;
 public interface ITaskService extends IService<Task> {
 
     /**
-     * 移动端插入任务
+     * 插入任务
      *
      * @param param 参数
      * @return 唯一 ID
@@ -32,13 +32,14 @@ public interface ITaskService extends IService<Task> {
 
     /**
      * 分页查询 Task
+     *
      * @param param 参数
      * @return 分页数据
      */
     IPage<Task> page(QueryTaskDTO param);
 
     /**
-     * 移动端结束任务
+     * 结束任务
      *
      * @param param 参数
      * @return 时长

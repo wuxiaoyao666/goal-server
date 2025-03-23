@@ -1,5 +1,6 @@
 package com.xiaoyao.flow.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.xiaoyao.flow.service.ITagService;
 import com.xiaoyao.flow.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author 逍遥
  * @since 2025-03-18
  */
+@SaCheckLogin
 @RestController
 @RequestMapping("/tag")
 public class TagController {
