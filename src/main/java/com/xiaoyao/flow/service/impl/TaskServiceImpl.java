@@ -73,6 +73,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
     }
 
     @Override
+    @Transactional
     public TimeBO finishTask(FinishTaskDTO param) {
         Task task = getOne(Wrappers.lambdaQuery(Task.class)
                 .eq(Task::getId, param.getTaskId()));
