@@ -85,6 +85,9 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
         // 是否展示当前任务
         if (param.isShowTask()) task.setStatus(TaskStatus.COMPLETED.getValue());
         else task.setStatus(TaskStatus.NOT_SHOW.getValue());
+        if (!param.getTitle().isBlank()) task.setTitle(param.getTitle());
+        if (!param.getFirstTag().isBlank()) task.setFirstTag(param.getFirstTag());
+        if (!param.getSecondTag().isBlank()) task.setSecondTag(param.getSecondTag());
         LocalDateTime now = LocalDateTime.now();
         task.setFinishDate(now.toLocalDate());
         task.setFinishTime(now.toLocalTime());
