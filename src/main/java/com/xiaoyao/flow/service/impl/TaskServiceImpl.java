@@ -23,6 +23,7 @@ import com.xiaoyao.flow.utils.TimeUtils;
 import com.xiaoyao.flow.entity.vo.RetrospectiveVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -86,9 +87,9 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
         // 是否展示当前任务
         if (param.isShowTask()) task.setStatus(TaskStatus.COMPLETED.getValue());
         else task.setStatus(TaskStatus.NOT_SHOW.getValue());
-        if (!param.getTitle().isBlank()) task.setTitle(param.getTitle());
-        if (!param.getFirstTag().isBlank()) task.setFirstTag(param.getFirstTag());
-        if (!param.getSecondTag().isBlank()) task.setSecondTag(param.getSecondTag());
+        if (StringUtils.hasText(param.getTitle())) task.setTitle(param.getTitle());
+        if (StringUtils.hasText(param.getFirstTag())) task.setFirstTag(param.getFirstTag());
+        if (StringUtils.hasText(param.getSecondTag())) task.setSecondTag(param.getSecondTag());
         LocalDateTime now = LocalDateTime.now();
         task.setFinishDate(now.toLocalDate());
         task.setFinishTime(now.toLocalTime());
