@@ -95,8 +95,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
 
     @Override
     public Task getCurrentTask() {
-        return getOne(Wrappers.lambdaQuery(Task.class).eq(Task::getStatus, TaskStatus.IN_PROGRESS.getValue())
-                .eq(Task::getPlatform, Platform.APP.getValue()));
+        return getOne(Wrappers.lambdaQuery(Task.class).eq(Task::getStatus, TaskStatus.IN_PROGRESS.getValue()));
     }
 
     @Override
