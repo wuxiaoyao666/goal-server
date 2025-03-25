@@ -13,7 +13,6 @@ import com.xiaoyao.flow.entity.dto.RetrospectiveDTO;
 import com.xiaoyao.flow.entity.Task;
 import com.xiaoyao.flow.entity.vo.MaxDurationTagVO;
 import com.xiaoyao.flow.entity.vo.RetrospectiveRowVO;
-import com.xiaoyao.flow.enums.Platform;
 import com.xiaoyao.flow.enums.TaskStatus;
 import com.xiaoyao.flow.exception.TimeFlowException;
 import com.xiaoyao.flow.mapper.TaskMapper;
@@ -63,7 +62,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
 
     @Override
     public IPage<Task> page(QueryTaskDTO param) {
-        Page page = new Page<>(param.getCurrent(), param.getLimit());
+        Page<Task> page = new Page<>(param.getCurrent(), param.getLimit());
         LambdaQueryWrapper<Task> wrapper = Wrappers.lambdaQuery(Task.class)
                 .between(Task::getStartDate, param.getStartDate(), param.getFinishDate())
                 .eq(Task::getStatus, param.getStatus())
