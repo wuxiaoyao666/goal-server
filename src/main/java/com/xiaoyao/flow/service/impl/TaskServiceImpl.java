@@ -22,6 +22,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xiaoyao.flow.utils.TimeUtils;
 import com.xiaoyao.flow.entity.vo.RetrospectiveVO;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -41,6 +42,7 @@ import java.util.*;
 public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements ITaskService {
 
     @Override
+    @Transactional
     public Long createTask(CreateTaskDTO param) {
         // 1. 校验是否有任务还未完成
         long unFinishTaskCount = count(Wrappers.lambdaQuery(Task.class).eq(Task::getStatus, TaskStatus.IN_PROGRESS.getValue()));
@@ -92,8 +94,8 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
     }
 
     @Override
-    public List<Task> getCurrentTaskId() {
-        return list(Wrappers.lambdaQuery(Task.class).eq(Task::getStatus, TaskStatus.IN_PROGRESS.getValue())
+    public Task getCurrentTask() {
+        return getOne(Wrappers.lambdaQuery(Task.class).eq(Task::getStatus, TaskStatus.IN_PROGRESS.getValue())
                 .eq(Task::getPlatform, Platform.APP.getValue()));
     }
 

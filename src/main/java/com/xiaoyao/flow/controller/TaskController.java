@@ -48,7 +48,7 @@ public class TaskController {
     }
 
     @GetMapping("/getCurrentTask")
-    public Result getCurrentTaskId() {
-        return Result.success(taskService.getCurrentTaskId());
+    public Result getCurrentTask() {
+        return Result.success(taskService.getCurrentTask());
     }
 }

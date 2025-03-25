@@ -47,11 +47,11 @@ public interface ITaskService extends IService<Task> {
     TimeBO finishTask(FinishTaskDTO param);
 
     /**
-     * 获取当前任务 ID
+     * 获取当前任务
      *
      * @return 当前正在执行的
      */
-    List<Task> getCurrentTaskId();
+    Task getCurrentTask();
 
     /**
      * 复盘
