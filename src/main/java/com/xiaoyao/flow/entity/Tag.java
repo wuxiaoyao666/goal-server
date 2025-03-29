@@ -36,4 +36,9 @@ public class Tag implements Serializable {
      * 父标签
      */
     private Long parent;
+
+    /**
+     * 用户 ID
+     */
+    private Integer userId;
 }

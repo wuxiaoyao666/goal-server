@@ -1,5 +1,6 @@
 package com.xiaoyao.flow.service.impl;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -55,7 +56,8 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
                 .startTime(LocalTime.now())
                 .startDate(LocalDate.now())
                 .status(TaskStatus.IN_PROGRESS.getValue())
-                .platform(param.getPlatform()).build();
+                .platform(param.getPlatform())
+                .userId(StpUtil.getLoginIdAsInt()).build();
         save(task);
         return task.getId();
     }
@@ -67,7 +69,8 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
                 .between(Task::getStartDate, param.getStartDate(), param.getFinishDate())
                 .eq(Task::getStatus, param.getStatus())
                 .eq(Task::getFirstTag, param.getFirstTag())
-                .eq(Task::getSecondTag, param.getSecondTag());
+                .eq(Task::getSecondTag, param.getSecondTag())
+                .eq(Task::getUserId, StpUtil.getLoginIdAsInt());
         if (param.getPlatform() != null) wrapper.eq(Task::getPlatform, param.getPlatform());
         return page(page, wrapper);
     }
@@ -99,7 +102,8 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
 
     @Override
     public Task getCurrentTask() {
-        return getOne(Wrappers.lambdaQuery(Task.class).eq(Task::getStatus, TaskStatus.IN_PROGRESS.getValue()));
+        return getOne(Wrappers.lambdaQuery(Task.class).eq(Task::getStatus, TaskStatus.IN_PROGRESS.getValue())
+                .eq(Task::getUserId, StpUtil.getLoginIdAsInt()));
     }
 
     @Override
@@ -115,6 +119,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
         if (param.getPlatform() != null) {
             wrapper.eq(Task::getPlatform, param.getPlatform());
         }
+        wrapper.eq(Task::getUserId, StpUtil.getLoginIdAsInt());
         List<Task> tasks = list(wrapper);
         Map<String, FirstTagData> firstTagMap = new HashMap<>();
         Map<String, Long> globalSecondTagTotalMap = new HashMap<>(); // 全局子标签总时长

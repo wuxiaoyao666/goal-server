@@ -79,4 +79,9 @@ public class Task implements Serializable {
      * 平台: 1: PC 端；2:移动端
      */
     private Byte platform;
+
+    /**
+     * 用户 ID
+     */
+    private Integer userId;
 }

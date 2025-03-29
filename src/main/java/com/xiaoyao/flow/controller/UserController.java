@@ -4,6 +4,7 @@ import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.stp.parameter.SaLoginParameter;
 import com.xiaoyao.flow.constant.TimeFlowConstant;
+import com.xiaoyao.flow.entity.dto.RegisterDTO;
 import com.xiaoyao.flow.service.IUserService;
 import com.xiaoyao.flow.utils.Result;
 import com.xiaoyao.flow.entity.dto.LoginDTO;
@@ -28,10 +29,16 @@ public class UserController {
     private IUserService userService;
 
     @PostMapping("/login")
-    public Result login(@RequestBody @Validated LoginDTO param) {
-        UserVo login = userService.login(param);
+    public Result login(@RequestBody @Validated LoginDTO body) {
+        UserVo login = userService.login(body);
         StpUtil.login(login.getId(), new SaLoginParameter().setExtra(TimeFlowConstant.JwtUserInfo, login));
         return Result.success(StpUtil.getTokenValue());
+    }
+
+    @PostMapping("/register")
+    public Result register(@RequestBody @Validated RegisterDTO body){
+        userService.register(body);
+        return Result.success();
     }
 
     @SaCheckLogin

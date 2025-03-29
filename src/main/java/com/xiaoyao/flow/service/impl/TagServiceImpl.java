@@ -1,5 +1,7 @@
 package com.xiaoyao.flow.service.impl;
 
+import cn.dev33.satoken.stp.StpUtil;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.xiaoyao.flow.entity.Tag;
 import com.xiaoyao.flow.mapper.TagMapper;
 import com.xiaoyao.flow.service.ITagService;
@@ -26,7 +28,7 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements ITagS
     @Override
     public List<TagVO> tree() {
         // 查询所有标签
-        List<Tag> tags = list();
+        List<Tag> tags = list(Wrappers.lambdaQuery(Tag.class).eq(Tag::getUserId, StpUtil.getLoginIdAsInt()));
         // 存储 Vo 对象
         Map<Long, TagVO> voMap = new HashMap<>();
         List<TagVO> roots = new ArrayList<>();
