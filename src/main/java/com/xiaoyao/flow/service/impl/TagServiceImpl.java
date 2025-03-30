@@ -68,14 +68,12 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements ITagS
     @Transactional
     public void delete(Long id) {
         removeById(id);
-        if (id > 0) {
-            // 删除所有二级子标题
-            List<Tag> tags = list(Wrappers.lambdaQuery(Tag.class).select(Tag::getId).eq(Tag::getParent, id));
-            if (!tags.isEmpty()) {
-                // 级联删除
-                List<Long> tagIds = tags.stream().map(Tag::getId).toList();
-                remove(Wrappers.lambdaQuery(Tag.class).in(Tag::getId, tagIds));
-            }
+        // 删除所有二级子标题
+        List<Tag> tags = list(Wrappers.lambdaQuery(Tag.class).select(Tag::getId).eq(Tag::getParent, id));
+        if (!tags.isEmpty()) {
+            // 级联删除
+            List<Long> tagIds = tags.stream().map(Tag::getId).toList();
+            remove(Wrappers.lambdaQuery(Tag.class).in(Tag::getId, tagIds));
         }
     }
 }
