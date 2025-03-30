@@ -1,13 +1,16 @@
 package com.xiaoyao.flow.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.xiaoyao.flow.entity.Tag;
+import com.xiaoyao.flow.entity.dto.QueryTagDTO;
 import com.xiaoyao.flow.mapper.TagMapper;
 import com.xiaoyao.flow.service.ITagService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xiaoyao.flow.entity.vo.TagVO;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,5 +53,29 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements ITagS
             }
         }
         return roots;
+    }
+
+    @Override
+    public List<Tag> find(QueryTagDTO param) {
+        LambdaQueryWrapper<Tag> wrapper = Wrappers.lambdaQuery(Tag.class).eq(Tag::getUserId, StpUtil.getLoginIdAsInt());
+        if (param.getParent() != null) {
+            wrapper.eq(Tag::getParent, param.getParent());
+        }
+        return list(wrapper);
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long id) {
+        removeById(id);
+        if (id > 0) {
+            // 删除所有二级子标题
+            List<Tag> tags = list(Wrappers.lambdaQuery(Tag.class).select(Tag::getId).eq(Tag::getParent, id));
+            if (!tags.isEmpty()) {
+                // 级联删除
+                List<Long> tagIds = tags.stream().map(Tag::getId).toList();
+                remove(Wrappers.lambdaQuery(Tag.class).in(Tag::getId, tagIds));
+            }
+        }
     }
 }
