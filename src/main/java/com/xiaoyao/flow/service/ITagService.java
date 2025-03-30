@@ -1,5 +1,6 @@
 package com.xiaoyao.flow.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.xiaoyao.flow.entity.Tag;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.xiaoyao.flow.entity.dto.QueryTagDTO;
@@ -23,11 +24,11 @@ public interface ITagService extends IService<Tag> {
     List<TagVO> tree();
 
     /**
-     * 获取所有的一级标签
+     * 分页条件查询
      * @param param 参数
      * @return 查询结果
      */
-    List<Tag> find(QueryTagDTO param);
+    IPage<Tag> page(QueryTagDTO param);
 
     /**
      * 删除标题

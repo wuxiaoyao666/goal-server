@@ -27,18 +27,17 @@ public class TagController {
     @Autowired
     private ITagService tagService;
 
-    @GetMapping("/list")
-    public Result list(@RequestBody QueryTagDTO body) {
-        return Result.success(tagService.find(body));
+    @PostMapping("/page")
+    public Result page(@RequestBody QueryTagDTO body) {
+        return Result.success(tagService.page(body));
     }
 
-    @PostMapping("/save")
-    public Result save(@RequestBody @Validated SaveTagDTO body) {
-        Tag tag = new Tag();
-        tag.setName(body.getName());
-        tag.setParent(body.getParent());
-        tag.setUserId(StpUtil.getLoginIdAsInt());
-        tagService.save(tag);
+    @PostMapping("/saveOrUpdate")
+    public Result saveOrUpdate(@RequestBody @Validated SaveTagDTO body) {
+        Tag tag = Tag.builder().id(body.getId())
+                .name(body.getName()).parent(body.getParent())
+                .userId(StpUtil.getLoginIdAsInt()).build();
+        tagService.saveOrUpdate(tag);
         return Result.success();
     }
 

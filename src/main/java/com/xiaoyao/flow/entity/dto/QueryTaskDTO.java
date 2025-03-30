@@ -1,5 +1,6 @@
 package com.xiaoyao.flow.entity.dto;
 
+import com.xiaoyao.flow.constant.TimeFlowConstant;
 import com.xiaoyao.flow.enums.TaskStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -53,5 +54,5 @@ public class QueryTaskDTO {
     /**
      * 每页展示条数
      */
-    private int limit = 5;
+    private int limit = TimeFlowConstant.DefaultPageLimit;
 }
