@@ -1,0 +1,38 @@
+version: '3'
+services:
+  mysql:
+    container_name: mysql
+    image: mysql:8.0.39
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: Senge520...
+    volumes:
+      - /opt/soft/docker/mysql/data:/var/lib/mysql
+      - /opt/soft/docker/mysql/conf:/etc/mysql/conf.d/
+      - /opt/soft/docker/mysql/logs:/logs
+    command:
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_general_ci
+      --explicit_defaults_for_timestamp=true
+      --lower_case_table_names=1
+  redis:
+    container_name: redis
+    image: redis:${REDIS_VERSION}
+    restart: always
+    volumes:
+      - ${BASE_DIR}/redis/data:/data
+      - ${BASE_DIR}/redis/conf/redis.conf:/etc/redis/redis.conf
+    ports:
+      - ${REDIS_PORT}:6379
+    command: redis-server /etc/redis/redis.conf
+  node:
+    image: node
+    container_name: node
+    volumes:
+      - /opt/soft/time-flow/web:/opt/time-flow
+    tty: true          # 对应 -t 参数（分配伪终端）
+    stdin_open: true   # 对应 -i 参数（保持标准输入打开）
