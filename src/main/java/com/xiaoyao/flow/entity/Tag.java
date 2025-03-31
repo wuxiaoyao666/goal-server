@@ -2,10 +2,14 @@ package com.xiaoyao.flow.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+
+
 /**
  * <p>
  * 标签表
@@ -14,9 +18,10 @@ import lombok.ToString;
  * @author 逍遥
  * @since 2025-03-18
  */
-@Getter
-@Setter
-@ToString
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Tag implements Serializable {
 
     private static final long serialVersionUID = 1L;

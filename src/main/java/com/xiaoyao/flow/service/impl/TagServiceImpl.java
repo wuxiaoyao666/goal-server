@@ -2,7 +2,9 @@ package com.xiaoyao.flow.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xiaoyao.flow.entity.Tag;
 import com.xiaoyao.flow.entity.dto.QueryTagDTO;
 import com.xiaoyao.flow.mapper.TagMapper;
@@ -56,12 +58,13 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements ITagS
     }
 
     @Override
-    public List<Tag> find(QueryTagDTO param) {
+    public IPage<Tag> page(QueryTagDTO param) {
+        Page<Tag> page = new Page<>(param.getCurrent(), param.getLimit());
         LambdaQueryWrapper<Tag> wrapper = Wrappers.lambdaQuery(Tag.class).eq(Tag::getUserId, StpUtil.getLoginIdAsInt());
         if (param.getParent() != null) {
             wrapper.eq(Tag::getParent, param.getParent());
         }
-        return list(wrapper);
+        return page(page, wrapper);
     }
 
     @Override
