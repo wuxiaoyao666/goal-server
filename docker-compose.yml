@@ -34,5 +34,6 @@ services:
     container_name: node
     volumes:
       - /opt/soft/time-flow/web:/opt/time-flow
-    tty: true          # 对应 -t 参数（分配伪终端）
-    stdin_open: true   # 对应 -i 参数（保持标准输入打开）
+      - src/main/resources/web:/opt/output/dist/
+    working_dir: /opt/time-flow/time-flow-web  # 直接进入项目目录
+    command: sh -c "npm i -g pnpm pnpm install && pnpm run build && cp -r dist /opt/output"
