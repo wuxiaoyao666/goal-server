@@ -30,7 +30,7 @@ services:
       - ${REDIS_PORT}:6379
     command: redis-server /etc/redis/redis.conf
   node:
-    image: node
+    image: node:22.14.0
     container_name: node
     volumes:
       - /opt/soft/time-flow/web:/opt/time-flow
