@@ -21,8 +21,8 @@ import com.xiaoyao.flow.service.ITaskService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xiaoyao.flow.utils.TimeUtils;
 import com.xiaoyao.flow.entity.vo.RetrospectiveVO;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.Duration;
@@ -43,13 +43,7 @@ import java.util.*;
 public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements ITaskService {
 
     @Override
-    @Transactional
     public Long createTask(CreateTaskDTO param) {
-        // 1. 校验是否有任务还未完成
-        long unFinishTaskCount = count(Wrappers.lambdaQuery(Task.class).eq(Task::getStatus, TaskStatus.IN_PROGRESS.getValue()));
-        if (unFinishTaskCount > 0) {
-            throw new TimeFlowException("还有任务未完成！");
-        }
         Task task = Task.builder().title(param.getTitle())
                 .firstTag(param.getFirstTag())
                 .secondTag(param.getSecondTag())
@@ -58,7 +52,11 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
                 .status(TaskStatus.IN_PROGRESS.getValue())
                 .platform(param.getPlatform())
                 .userId(StpUtil.getLoginIdAsInt()).build();
-        save(task);
+        try{
+            save(task);
+        }catch (DuplicateKeyException e) {
+            throw new TimeFlowException("还有任务未完成！");
+        }
         return task.getId();
     }
 
@@ -76,10 +74,8 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
     }
 
     @Override
-    @Transactional
     public TimeBO finishTask(FinishTaskDTO param) {
-        Task task = getOne(Wrappers.lambdaQuery(Task.class)
-                .eq(Task::getId, param.getTaskId()));
+        Task task = getById(param.getTaskId());
         if (task == null) {
             throw new TimeFlowException("任务不存在！");
         }
