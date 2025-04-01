@@ -33,7 +33,7 @@ services:
     image: node:22.14.0
     container_name: node
     volumes:
-      - /opt/soft/time-flow-web:/opt
-      - /opt/soft/time-flow-server/src/main/resources/web:/opt/output/dist/
+      - /opt/soft/time-flow/time-flow-web:/opt
+      - /opt/soft/time-flow/time-flow-server/src/main/resources/web:/opt/output/dist/
     working_dir: /opt/time-flow-web  # 直接进入项目目录
     command: sh -c "npm i -g pnpm pnpm install && pnpm run build && cp -r dist /opt/output"
