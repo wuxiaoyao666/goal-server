@@ -17,7 +17,7 @@
     <properties>
         <java.version>21</java.version>
         <jbrcypt.version>0.4</jbrcypt.version>
-        <fastjson.version>2.0.56</fastjson.version>
+        <freemarker.version>2.3.28</freemarker.version>
         <sa-token.version>1.41.0</sa-token.version>
         <mybatis-plus.version>3.5.10.1</mybatis-plus.version>
     </properties>
@@ -70,13 +70,8 @@
         <dependency>
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
-            <version>2.3.28</version>
+            <version>${freemarker.version}</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba.fastjson2</groupId>
-            <artifactId>fastjson2</artifactId>
-            <version>${fastjson.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
