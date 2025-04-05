@@ -10,76 +10,78 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
-
-
 /**
  * <p>
- * 记录表
+ * 计划
  * </p>
  *
  * @author 逍遥
- * @since 2025-03-20
+ * @since 2025-04-05
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Task implements Serializable {
+public class Plan implements Serializable {
 
     /**
-     * 唯一标识
+     * 唯一ID
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     /**
-     * 标题
+     * 计划名
      */
     private String title;
 
     /**
-     * 当日
+     * 开始日期
      */
     private LocalDate startDate;
 
     /**
-     * 创建时间
+     * 开始时间
      */
     private LocalTime startTime;
 
     /**
-     * 完成日
+     * 结束日期
      */
-    private LocalDate finishDate;
+    private LocalDate endDate;
 
     /**
-     * 完成时间
+     * 结束时间
      */
-    private LocalTime finishTime;
-
+    private LocalTime endTime;
 
     /**
-     * 一级标签
+     * 标题ID
      */
-    private String firstTag;
+    private Long tagId;
 
     /**
-     * 二级标签
-     */
-    private String secondTag;
-
-    /**
-     * 1: 记录中；2:已完成 3: 不统计
+     * 状态（1 未完成 2 完成 3 取消）
      */
     private Byte status;
 
     /**
-     * 平台: 1: PC 端；2:移动端
+     * 任务类型（1 收件箱 2 任务 3 循环任务）
      */
-    private Byte platform;
+    private Byte type;
 
     /**
-     * 用户 ID
+     * 规则，只有 type 为 3 才需要。（1 每天一次 2 每周一次）
+     */
+    private Byte rule;
+
+    /**
+     * 用户ID
      */
     private Integer userId;
+
+    /**
+     * 是否进行消息通知 1 通知
+     */
+    private Byte notify;
 }
