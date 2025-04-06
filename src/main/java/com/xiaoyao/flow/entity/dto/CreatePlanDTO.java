@@ -17,7 +17,12 @@ public class CreatePlanDTO {
     @NotNull(message = "标签不能为空")
     private Long tagId;
     /// 类型
-    private Byte type = 1;
+    @NotNull(message = "Plan 类型不能为空")
+    private Byte type;
+    /// 开始日期
+    private LocalDate startDate;
+    /// 开始时间
+    private LocalTime startTime;
     /// 结束日期
     private LocalDate endDate;
     /// 结束时间

@@ -28,7 +28,7 @@ public class PlanController {
     private IPlanService planService;
 
     @PostMapping("/create")
-    public Result create(@Validated @RequestBody CreatePlanDTO body){
-        return Result.success();
+    public Result create(@Validated @RequestBody CreatePlanDTO body) {
+        return Result.success(planService.create(body));
     }
 }
