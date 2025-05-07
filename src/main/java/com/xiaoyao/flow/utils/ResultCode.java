@@ -9,11 +9,10 @@ import lombok.Getter;
 public enum ResultCode {
     SUCCESS(200, "操作成功"),
     BAD_REQUEST(400, "参数错误"),
-    UNAUTHORIZED(401, "身份未知"),
     USERNAME_PASSWORD_INVALID_EXCEPTION(402, "用户名或密码错误"),
     SERVER_ERROR(500, "服务异常"),
-    NOT_LOGIN(10001, "登录已过期，请重新登录"),
-    SAVE_FAIL(10002, "保存失败");
+    NOT_LOGIN(401, "登录已过期，请重新登录"),
+    SAVE_FAIL(10001, "保存失败");
 
     private final int code;
     private final String message;
