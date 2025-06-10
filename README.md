@@ -1,20 +1,24 @@
 # 数据库脚本
 ```sql
-create table task
+create table time_flow.task
 (
-    id         bigint auto_increment comment '唯一标识'
+    id             bigint auto_increment comment '唯一标识'
         primary key,
-    title      varchar(255) not null comment '标题',
-    start_date date         not null comment '当日',
-    start_time time         not null comment '创建时间',
-    end_date   date null comment '结束日',
-    end_time   time null comment '结束时间',
-    first_tag  varchar(255) null comment '一级标签',
-    second_tag varchar(255) null comment '二级标签',
-    status     tinyint null comment '1: 记录中；2:已完成',
-    platform   tinyint      not null comment '平台: 1: PC 端；2:移动端',
-    user_id    int comment '用户id'
-) comment '记录表';
+    title          varchar(255) not null comment '标题',
+    start_date     date         not null comment '当日',
+    start_time     time         not null comment '创建时间',
+    finish_date    date         null comment '结束日',
+    finish_time    time         null comment '结束时间',
+    first_tag      varchar(255) null comment '一级标签',
+    second_tag     varchar(255) null comment '二级标签',
+    status         tinyint      null comment '1: 记录中；2:已完成',
+    platform       tinyint      not null comment '平台: 1: PC 端；2:移动端',
+    user_id        int          null,
+    is_in_progress tinyint(1) as (if((`status` = 1), 1, NULL)),
+    constraint idx_user_in_progress
+        unique (user_id, is_in_progress)
+)
+    comment '记录表'
 
 create table tag
 (
