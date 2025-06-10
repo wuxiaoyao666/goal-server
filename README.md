@@ -21,7 +21,7 @@ create table tag
     id     bigint auto_increment comment '编号'
         primary key,
     name   varchar(255) not null comment '名称',
-    parent bigint default 0 null comment '父标签'
+    parent bigint default 0 null comment '父标签',
     user_id int comment '用户id'
 ) comment '标签表';
 insert into tag value (1,'工作',0,1);
