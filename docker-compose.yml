@@ -2,7 +2,7 @@ version: '3'
 services:
   mysql:
     container_name: mysql
-    image: mysql:8.0.39
+    image: mysql:8.0.42
     restart: always
     ports:
       - 3306:3306
@@ -21,14 +21,25 @@ services:
       --lower_case_table_names=1
   redis:
     container_name: redis
-    image: redis:${REDIS_VERSION}
+    image: redis:7.4.0
     restart: always
     volumes:
-      - ${BASE_DIR}/redis/data:/data
-      - ${BASE_DIR}/redis/conf/redis.conf:/etc/redis/redis.conf
+      - /opt/soft/docker/redis/data:/data
+      - /opt/soft/docker/redis/conf/redis.conf:/etc/redis/redis.conf
     ports:
-      - ${REDIS_PORT}:6379
+      - 6379:6379
     command: redis-server /etc/redis/redis.conf
+  nginx:
+    container_name: nginx
+    image: nginx:1.28.0
+    restart: always
+    volumes:
+      - /opt/soft/docker/nginx/conf/nginx.conf:/etc/nginx/nginx.conf
+      - /opt/soft/docker/nginx/conf/conf.d:/etc/nginx/conf.d
+      - /opt/soft/docker/nginx/log:/var/log/nginx
+      - /opt/soft/docker/nginx/html:/usr/share/nginx/html
+    ports:
+      - 80:80
   node:
     image: node:22.14.0
     container_name: node
