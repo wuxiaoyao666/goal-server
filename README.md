@@ -45,7 +45,7 @@ insert into tag value (default,'骑行',3,1);
 
 create table user
 (
-    id       int auto_increment comment '编号'
+    id       bigint auto_increment comment '编号'
         primary key,
     username varchar(255) not null comment '用户名',
     password varchar(255) not null comment '密码',
