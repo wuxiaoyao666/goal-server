@@ -13,7 +13,7 @@ create table time_flow.task
     second_tag     varchar(255) null comment '二级标签',
     status         tinyint      null comment '1: 记录中；2:已完成',
     platform       tinyint      not null comment '平台: 1: PC 端；2:移动端',
-    user_id        int          null,
+    user_id        bigint          null,
     is_in_progress tinyint(1) as (if((`status` = 1), 1, NULL)),
     constraint idx_user_in_progress
         unique (user_id, is_in_progress)
