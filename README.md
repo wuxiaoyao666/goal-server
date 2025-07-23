@@ -26,7 +26,7 @@ create table tag
         primary key,
     name   varchar(255) not null comment '名称',
     parent bigint default 0 null comment '父标签',
-    user_id int comment '用户id'
+    user_id bigint comment '用户id'
 ) comment '标签表';
 insert into tag value (1,'工作',0,1);
 insert into tag value (2,'学习',0,1);
