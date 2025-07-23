@@ -44,7 +44,7 @@ services:
     image: node:22.14.0
     container_name: node
     volumes:
-      - /opt/soft/time-flow/time-flow-client:/opt
-      - /opt/soft/time-flow/time-flow-server/src/main/resources/web:/opt/output/dist/
+      - /opt/soft/goal/time-flow-client:/opt
+      - /opt/soft/goal/goal-server/src/main/resources/web:/opt/output/dist/
     working_dir: /opt/
     command: sh -c "npm i -g pnpm && pnpm install && pnpm run build && cp -r dist /opt/output"

@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.xiaoyao</groupId>
-    <artifactId>time-flow-server</artifactId>
+    <artifactId>goal-server</artifactId>
     <version>1.0</version>
-    <name>time-flow-server</name>
-    <description>time-flow-server</description>
+    <name>goal-server</name>
+    <description>goal-server</description>
 
     <properties>
         <java.version>21</java.version>
