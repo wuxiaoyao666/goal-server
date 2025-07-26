@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  * 统一异常处理
  */
 @Slf4j
-@RestControllerAdvice(basePackages = "com.xiaoyao.flow.controller")
+@RestControllerAdvice(basePackages = "com.xiaoyao.goal.controller")
 public class GoalWebException {
 
     /**
