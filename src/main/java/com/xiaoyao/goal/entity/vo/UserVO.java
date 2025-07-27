@@ -8,7 +8,7 @@ import lombok.Data;
  * @author 逍遥
  */
 @Data
-public class UserVo {
+public class UserVO {
     /**
      * 编号
      */

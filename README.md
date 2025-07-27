@@ -62,12 +62,12 @@ create table user
         unique (username)
 )comment '用户表';
 insert into user value (1,'xiaoyao','$2a$12$/2XyzTJ2uqETGLW7xzeSZ.n5KSr8UHTDfKGMXaDyckIpjsfePr.Ki','逍遥','https://pic1.imgdb.cn/item/675533b5d0e0a243d4dfdff8.webp',1,'15822054833','1214166598@qq.com');
-create table diaries(
-                        id bigint primary key auto_increment comment '唯一标识',
-                        user_id bigint comment '用户ID',
-                        title varchar(255) not null comment '日记标题',
-                        content text not null comment '日记正文',
-                        create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-                        update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
+create table diary(
+    id bigint primary key auto_increment comment '唯一标识',
+    user_id bigint comment '用户ID',
+    title blob not null comment '日记标题',
+    content blob not null comment '日记正文',
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
 )charset utf8mb4 comment '日记表';
 ```

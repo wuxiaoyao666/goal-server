@@ -10,7 +10,7 @@ import com.xiaoyao.goal.service.IUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xiaoyao.goal.utils.BcryptUtils;
 import com.xiaoyao.goal.utils.ResultCode;
-import com.xiaoyao.goal.entity.vo.UserVo;
+import com.xiaoyao.goal.entity.vo.UserVO;
 import com.xiaoyao.goal.entity.dto.LoginDTO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -27,7 +27,7 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
 
     @Override
-    public UserVo login(LoginDTO param) {
+    public UserVO login(LoginDTO param) {
         // 1. 查询用户
         LambdaQueryWrapper<User> wrapper = Wrappers.lambdaQuery(User.class)
                 .select(User::getId, User::getUsername, User::getPassword, User::getNickname, User::getAvatar)
@@ -37,7 +37,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         if (user == null || !BcryptUtils.verify(param.getPassword(), user.getPassword())) {
             throw new BusinessException(ResultCode.USERNAME_PASSWORD_INVALID_EXCEPTION);
         }
-        UserVo userVo = new UserVo();
+        UserVO userVo = new UserVO();
         BeanUtils.copyProperties(user, userVo);
         return userVo;
     }

@@ -8,7 +8,7 @@ import com.xiaoyao.goal.entity.dto.RegisterDTO;
 import com.xiaoyao.goal.service.IUserService;
 import com.xiaoyao.goal.utils.Result;
 import com.xiaoyao.goal.entity.dto.LoginDTO;
-import com.xiaoyao.goal.entity.vo.UserVo;
+import com.xiaoyao.goal.entity.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +30,7 @@ public class UserController {
 
     @PostMapping("/login")
     public Result login(@RequestBody @Validated LoginDTO body) {
-        UserVo login = userService.login(body);
+        UserVO login = userService.login(body);
         StpUtil.login(login.getId(), new SaLoginParameter().setExtra(GoalConstant.JwtUserInfo, login));
         return Result.success(StpUtil.getTokenValue());
     }

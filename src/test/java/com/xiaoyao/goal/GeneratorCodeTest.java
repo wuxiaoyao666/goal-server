@@ -11,14 +11,14 @@ import java.nio.file.Paths;
 public class GeneratorCodeTest {
 
     public static void main(String[] args) {
-        FastAutoGenerator.create("jdbc:mysql://117.72.82.38:3306/time_flow?useUnicode=true&characterEncoding=utf-8", "root", "Senge520...")
+        FastAutoGenerator.create("jdbc:mysql://124.221.136.224:3306/goal?useUnicode=true&characterEncoding=utf-8", "root", "Senge520...")
                 .globalConfig(builder -> builder
                         .author("逍遥")
                         .outputDir(Paths.get(System.getProperty("user.dir")) + "/src/main/java")
                         .commentDate("yyyy-MM-dd")
                 )
                 .packageConfig(builder -> builder
-                        .parent("com.xiaoyao.flow")
+                        .parent("com.xiaoyao.goal")
                         .entity("entity")
                         .mapper("mapper")
                         .service("service")

@@ -3,7 +3,7 @@ package com.xiaoyao.goal.service;
 import com.xiaoyao.goal.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.xiaoyao.goal.entity.dto.RegisterDTO;
-import com.xiaoyao.goal.entity.vo.UserVo;
+import com.xiaoyao.goal.entity.vo.UserVO;
 import com.xiaoyao.goal.entity.dto.LoginDTO;
 
 /**
@@ -19,7 +19,7 @@ public interface IUserService extends IService<User> {
      * 用户登陆
      * @param param 登陆参数
      */
-    UserVo login(LoginDTO param);
+    UserVO login(LoginDTO param);
 
     /**
      * 用户注册
