@@ -25,8 +25,6 @@ import java.time.LocalDateTime;
 @TableName(autoResultMap = true)
 public class Diary implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * 唯一标识
      */
@@ -49,6 +47,11 @@ public class Diary implements Serializable {
      */
     @TableField(typeHandler = AesEncryptTypeHandler.class)
     private String content;
+
+    /**
+     * 盲索引
+     */
+    private String searchIndex;
 
     /**
      * 创建时间

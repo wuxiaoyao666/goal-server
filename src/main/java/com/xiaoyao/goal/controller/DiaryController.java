@@ -2,6 +2,7 @@ package com.xiaoyao.goal.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.xiaoyao.goal.entity.dto.SaveDiaryDTO;
+import com.xiaoyao.goal.entity.dto.SearchDiaryDTO;
 import com.xiaoyao.goal.service.IDiaryService;
 import com.xiaoyao.goal.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,5 +41,10 @@ public class DiaryController {
     @GetMapping("/recordDays")
     public Result recordDays(){
         return Result.success(diaryService.recordDays());
+    }
+
+    @PostMapping("/search")
+    public Result search(@RequestBody @Validated SearchDiaryDTO body){
+        return Result.success(diaryService.search(body));
     }
 }

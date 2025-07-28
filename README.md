@@ -67,6 +67,7 @@ create table diary(
     user_id bigint comment '用户ID',
     title blob not null comment '日记标题',
     content blob not null comment '日记正文',
+    search_index text comment '盲索引',
     create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
 )charset utf8mb4 comment '日记表';

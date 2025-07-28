@@ -17,6 +17,7 @@
     <properties>
         <java.version>21</java.version>
         <jbrcypt.version>0.4</jbrcypt.version>
+        <hanlp.version>portable-1.8.6</hanlp.version>
         <freemarker.version>2.3.28</freemarker.version>
         <sa-token.version>1.44.0</sa-token.version>
         <mybatis-plus.version>3.5.12</mybatis-plus.version>
@@ -72,6 +73,11 @@
             <artifactId>freemarker</artifactId>
             <version>${freemarker.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.hankcs</groupId>
+            <artifactId>hanlp</artifactId>
+            <version>${hanlp.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

@@ -1,23 +1,25 @@
 package com.xiaoyao.goal.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.xiaoyao.goal.entity.Diary;
 import com.xiaoyao.goal.entity.dto.SaveDiaryDTO;
+import com.xiaoyao.goal.entity.dto.SearchDiaryDTO;
 import com.xiaoyao.goal.entity.vo.DiaryVO;
 import com.xiaoyao.goal.entity.vo.RecordDaysVO;
-import com.xiaoyao.goal.exception.GoalException;
+import com.xiaoyao.goal.entity.vo.SearchDiaryVO;
 import com.xiaoyao.goal.mapper.DiaryMapper;
 import com.xiaoyao.goal.service.IDiaryService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.xiaoyao.goal.utils.BlindGenerator;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -39,18 +41,21 @@ public class DiaryServiceImpl extends ServiceImpl<DiaryMapper, Diary> implements
                 .eq(Diary::getUserId, userId)
                 .ge(Diary::getCreateTime, targetDate.atStartOfDay())
                 .lt(Diary::getCreateTime, targetDate.plusDays(1).atStartOfDay()));
+        String searchIndex = BlindGenerator.segment(body.getTitle() + " " + body.getContent());
         Diary diary;
         if (existingDiary != null) {
             // 存在则使用已有日记进行修改
             diary = existingDiary;
             diary.setTitle(body.getTitle());
             diary.setContent(body.getContent());
+            diary.setSearchIndex(searchIndex);
         } else {
             // 不存在则创建新日记
             diary = Diary.builder()
                     .userId(userId)
                     .title(body.getTitle())
                     .content(body.getContent())
+                    .searchIndex(searchIndex)
                     .createTime(LocalDateTime.of(targetDate, LocalTime.now()))
                     .build();
         }
@@ -61,6 +66,7 @@ public class DiaryServiceImpl extends ServiceImpl<DiaryMapper, Diary> implements
     @Override
     public DiaryVO info(LocalDate body) {
         Diary diary = getOne(Wrappers.lambdaQuery(Diary.class)
+                .select(Diary::getId, Diary::getTitle, Diary::getContent)
                 .eq(Diary::getUserId, StpUtil.getLoginIdAsLong())
                 .ge(Diary::getCreateTime, body.atStartOfDay())
                 .lt(Diary::getCreateTime, body.plusDays(1).atStartOfDay()));
@@ -91,6 +97,15 @@ public class DiaryServiceImpl extends ServiceImpl<DiaryMapper, Diary> implements
             }
             nextDate = currentDate;
         }
-        return new  RecordDaysVO(recordDates.size(), continuousDays);
+        return new RecordDaysVO(recordDates.size(), continuousDays);
+    }
+
+    @Override
+    public List<SearchDiaryVO> search(SearchDiaryDTO body) {
+        String keywordHash = BlindGenerator.hashToken(body.getKeyword());
+        List<Diary> diaryList = list(Wrappers.lambdaQuery(Diary.class).select(Diary::getTitle, Diary::getContent, Diary::getCreateTime).eq(Diary::getUserId, StpUtil.getLoginIdAsLong())
+                .like(Diary::getSearchIndex, "%" + keywordHash + "%"));
+        if (diaryList == null || diaryList.isEmpty()) return new ArrayList<>();
+        return diaryList.stream().map((diary) -> new SearchDiaryVO(diary.getTitle(), diary.getContent(), diary.getCreateTime().toLocalDate())).collect(Collectors.toList());
     }
 }

@@ -3,10 +3,13 @@ package com.xiaoyao.goal.service;
 import com.xiaoyao.goal.entity.Diary;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.xiaoyao.goal.entity.dto.SaveDiaryDTO;
+import com.xiaoyao.goal.entity.dto.SearchDiaryDTO;
 import com.xiaoyao.goal.entity.vo.DiaryVO;
 import com.xiaoyao.goal.entity.vo.RecordDaysVO;
+import com.xiaoyao.goal.entity.vo.SearchDiaryVO;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * <p>
@@ -37,4 +40,11 @@ public interface IDiaryService extends IService<Diary> {
      * @return 总记录天数和连续记录天数
      */
     RecordDaysVO recordDays();
+
+    /**
+     * 日记搜索
+     * @param body 搜索参数
+     * @return 搜索结果
+     */
+    List<SearchDiaryVO> search(SearchDiaryDTO body);
 }
