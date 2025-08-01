@@ -1,13 +1,15 @@
 package com.xiaoyao.goal.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xiaoyao.goal.entity.Diary;
 import com.xiaoyao.goal.entity.dto.SaveDiaryDTO;
 import com.xiaoyao.goal.entity.dto.SearchDiaryDTO;
 import com.xiaoyao.goal.entity.vo.DiaryVO;
 import com.xiaoyao.goal.entity.vo.RecordDaysVO;
-import com.xiaoyao.goal.entity.vo.SearchDiaryVO;
 import com.xiaoyao.goal.mapper.DiaryMapper;
 import com.xiaoyao.goal.service.IDiaryService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -17,9 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -101,11 +101,11 @@ public class DiaryServiceImpl extends ServiceImpl<DiaryMapper, Diary> implements
     }
 
     @Override
-    public List<SearchDiaryVO> search(SearchDiaryDTO body) {
+    public IPage<Diary> search(SearchDiaryDTO body) {
         String keywordHash = BlindGenerator.hashToken(body.getKeyword());
-        List<Diary> diaryList = list(Wrappers.lambdaQuery(Diary.class).select(Diary::getTitle, Diary::getContent, Diary::getCreateTime).eq(Diary::getUserId, StpUtil.getLoginIdAsLong())
-                .like(Diary::getSearchIndex, "%" + keywordHash + "%"));
-        if (diaryList == null || diaryList.isEmpty()) return new ArrayList<>();
-        return diaryList.stream().map((diary) -> new SearchDiaryVO(diary.getTitle(), diary.getContent(), diary.getCreateTime().toLocalDate())).collect(Collectors.toList());
+        Page<Diary> page = new Page<>(body.getCurrent(), body.getLimit());
+        LambdaQueryWrapper<Diary> wrapper = Wrappers.lambdaQuery(Diary.class).select(Diary::getTitle, Diary::getContent, Diary::getCreateTime).eq(Diary::getUserId, StpUtil.getLoginIdAsLong())
+                .like(Diary::getSearchIndex, "%" + keywordHash + "%");
+        return page(page, wrapper);
     }
 }
