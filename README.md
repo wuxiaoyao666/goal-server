@@ -1,6 +1,6 @@
 # 数据库脚本
 ```sql
-create table time_flow.task
+create table task
 (
     id             bigint auto_increment comment '唯一标识'
         primary key,
