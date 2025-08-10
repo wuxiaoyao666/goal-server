@@ -4,8 +4,9 @@
 BASE_DIR="/opt/soft/goal"
 CLIENT_NAME="goal-client"
 SERVER_NAME="goal-server"
-RESOURCE_DIR="/src/main/resource/web"
-STATIC_DIR="dist"
+SERVER_RESOURCE_DIR="/src/main/resources"
+FRONT_STATIC_DIR="dist"
+BACK_STATIC_DIR="web"
 
 # 日志输出函数（新增，用于统一日志格式）
 log() {
@@ -27,7 +28,7 @@ cd "$CLIENT_DIR" || {
     exit 1
 }
 # 先删除目标目录的旧dist
-rm -rf "$STATIC_DIR"
+rm -rf "$FRONT_STATIC_DIR"
 
 # 拉取代码并构建
 log "拉取客户端最新代码..."
@@ -49,16 +50,17 @@ if [ ! -d "dist" ]; then
 fi
 
 # 拷贝dist到服务端资源目录
-SERVER_RESOURCE_DIR="$BASE_DIR/$SERVER_NAME$RESOURCE_DIR"
+SERVER_RESOURCE_DIR="$BASE_DIR/$SERVER_NAME$SERVER_RESOURCE_DIR"
 log "正在拷贝dist到服务端资源目录: $SERVER_RESOURCE_DIR"
 
 # 直接将dist移动到目标目录并命名为web
 log "删除旧web目录并移动dist为web..."
-rm -rf "$SERVER_RESOURCE_DIR"  # 先彻底删除旧web目录
-mv "$STATIC_DIR" "$SERVER_RESOURCE_DIR" || {
+rm -rf "$SERVER_RESOURCE_DIR/$BACK_STATIC_DIR"  # 先彻底删除旧web目录
+mv "$FRONT_STATIC_DIR" "$SERVER_RESOURCE_DIR" || {
     log "ERROR: 移动dist到 $SERVER_RESOURCE_DIR 失败"
     exit 1
 }
+mv $SERVER_RESOURCE_DIR/$FRONT_STATIC_DIR $SERVER_RESOURCE_DIR/$BACK_STATIC_DIR
 
 # 部署服务端
 log "开始部署$SERVER_NAME..."
