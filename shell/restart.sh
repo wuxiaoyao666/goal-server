@@ -4,7 +4,7 @@
 BASE_DIR="/opt/soft/goal"
 CLIENT_NAME="goal-client"
 SERVER_NAME="goal-server"
-RESOURCE_DIR="/src/main/resource"
+RESOURCE_DIR="/src/main/resource/web"
 STATIC_DIR="dist"
 
 # 日志输出函数（新增，用于统一日志格式）
@@ -51,21 +51,12 @@ fi
 # 拷贝dist到服务端资源目录
 SERVER_RESOURCE_DIR="$BASE_DIR/$SERVER_NAME$RESOURCE_DIR"
 log "正在拷贝dist到服务端资源目录: $SERVER_RESOURCE_DIR"
-# 移动dist目录到资源目录
-mv "$STATIC_DIR" "$SERVER_RESOURCE_DIR/" || {
-    log "ERROR: 拷贝dist到 $SERVER_RESOURCE_DIR 失败"
-    exit 1
-}
 
-# 重命名dist为web
-log "重命名dist为web..."
-cd "$SERVER_RESOURCE_DIR" || {
-    log "ERROR: 无法进入服务端资源目录 $SERVER_RESOURCE_DIR"
-    exit 1
-}
-rm -rf web  # 删除旧web目录
-mv dist web || {
-    log "ERROR: 重命名dist为web失败"
+# 直接将dist移动到目标目录并命名为web
+log "删除旧web目录并移动dist为web..."
+rm -rf "$SERVER_RESOURCE_DIR"  # 先彻底删除旧web目录
+mv "$STATIC_DIR" "$SERVER_RESOURCE_DIR" || {
+    log "ERROR: 移动dist到 $SERVER_RESOURCE_DIR 失败"
     exit 1
 }
 
