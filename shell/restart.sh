@@ -54,7 +54,7 @@ SERVER_RESOURCE_DIR="$SERVER_DIR/$SERVER_RESOURCE_DIR"
 log "正在拷贝dist到服务端资源目录: $SERVER_RESOURCE_DIR"
 
 # 直接将dist移动到目标目录并命名为web
-log "删除旧web目录并移动dist为web..."
+log "删除旧文件"
 # 删除旧资源
 rm -rf "$SERVER_RESOURCE_DIR/*"
 mv "$FRONT_STATIC_DIR/*" "$SERVER_RESOURCE_DIR" || {
