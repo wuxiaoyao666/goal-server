@@ -37,6 +37,12 @@ git pull || {
     exit 1
 }
 
+log "安装客户端依赖..."
+pnpm i || {
+  log "安装客户端依赖失败"
+  exit 1
+}
+
 log "开始打包客户端..."
 pnpm build || {
     log "ERROR: pnpm build 失败"
