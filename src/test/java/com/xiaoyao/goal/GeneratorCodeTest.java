@@ -10,7 +10,7 @@ import java.nio.file.Paths;
  */
 public class GeneratorCodeTest {
 
-    public static void main(String[] args) {
+    void main(String[] args) {
         FastAutoGenerator.create("jdbc:mysql://124.221.136.224:3306/goal?useUnicode=true&characterEncoding=utf-8", "root", "Senge520...")
                 .globalConfig(builder -> builder
                         .author("逍遥")

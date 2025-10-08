@@ -1,16 +1,16 @@
 package com.xiaoyao.goal.controller;
 
-import cn.dev33.satoken.annotation.SaCheckLogin;
+import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.xiaoyao.goal.entity.dto.SaveDiaryDTO;
 import com.xiaoyao.goal.entity.dto.SearchDiaryDTO;
 import com.xiaoyao.goal.service.IDiaryService;
 import com.xiaoyao.goal.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
@@ -18,9 +18,8 @@ import java.time.LocalDate;
  * </p>
  *
  * @author 逍遥
- * @since 2025-07-27
+ * @since 2025-10-08
  */
-@SaCheckLogin
 @RestController
 @RequestMapping("/diary")
 public class DiaryController {
@@ -29,22 +28,18 @@ public class DiaryController {
     private IDiaryService diaryService;
 
     @PostMapping("/sync")
-    public Result sync(@RequestBody @Validated SaveDiaryDTO body){
+    public Result sync(@RequestBody @Validated SaveDiaryDTO body) {
         return Result.success(diaryService.sync(body));
     }
 
-    @PostMapping("/info")
-    public Result info(@RequestBody @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate body) {
-        return Result.success(diaryService.info(body));
-    }
-
-    @GetMapping("/recordDays")
-    public Result recordDays(){
-        return Result.success(diaryService.recordDays());
-    }
-
     @PostMapping("/search")
-    public Result search(@RequestBody @Validated SearchDiaryDTO body){
+    public Result search(@RequestBody @Validated SearchDiaryDTO body) {
         return Result.success(diaryService.search(body));
+    }
+
+    @PostMapping("/delete")
+    public Result delete(@RequestBody Long id) {
+        diaryService.delete(id);
+        return Result.success();
     }
 }

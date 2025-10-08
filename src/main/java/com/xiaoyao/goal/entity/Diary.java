@@ -4,11 +4,13 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.xiaoyao.goal.utils.AesEncryptTypeHandler;
 import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * <p>
@@ -16,7 +18,7 @@ import java.time.LocalDateTime;
  * </p>
  *
  * @author 逍遥
- * @since 2025-07-27
+ * @since 2025-10-08
  */
 @Data
 @Builder
@@ -49,9 +51,10 @@ public class Diary implements Serializable {
     private String content;
 
     /**
-     * 盲索引
+     * 日记标签
      */
-    private String searchIndex;
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private List<String> tags;
 
     /**
      * 创建时间

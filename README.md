@@ -62,13 +62,35 @@ create table user
         unique (username)
 )comment '用户表';
 insert into user value (1,'xiaoyao','$2a$12$/2XyzTJ2uqETGLW7xzeSZ.n5KSr8UHTDfKGMXaDyckIpjsfePr.Ki','逍遥','https://pic1.imgdb.cn/item/675533b5d0e0a243d4dfdff8.webp',1,'15822054833','1214166598@qq.com');
-create table diary(
-    id bigint primary key auto_increment comment '唯一标识',
-    user_id bigint comment '用户ID',
-    title blob not null comment '日记标题',
-    content blob not null comment '日记正文',
-    search_index text comment '盲索引',
-    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
-)charset utf8mb4 comment '日记表';
+create table diary
+(
+    id          bigint auto_increment comment '唯一标识'
+        primary key,
+    user_id     bigint                             null comment '用户ID',
+    title       blob                               not null comment '日记标题',
+    content     blob                               null comment '日记正文',
+    tags        json                               null comment '日记标签',
+    create_time datetime default CURRENT_TIMESTAMP null comment '创建时间',
+    update_time datetime default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '更新时间'
+)
+    comment '日记表' charset = utf8mb4;
+
+create table diary_keyword
+(
+    id           bigint      not null comment '日记关联表主键'
+        primary key,
+    diary_id     bigint      not null comment '日记ID',
+    keyword_hash varchar(64) not null comment '关键词哈希',
+    constraint uk_diary_keyword
+        unique (diary_id, keyword_hash)
+)
+    comment '日记关键词关联表' charset = utf8mb4;
+
+create index idx_diary_id
+    on diary_keyword (diary_id);
+
+create index idx_keyword_hash
+    on diary_keyword (keyword_hash);
+
+
 ```

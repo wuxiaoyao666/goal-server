@@ -8,4 +8,5 @@ public class GoalConstant {
     public static final String NoTag = "未分类";
     public static final int DefaultPageLimit = 5;
     //public static final String Secret = "Senge520Senge520...";
+    public static final String DefaultDateTimeFormat = "yyyy-MM-dd HH:mm:ss";
 }

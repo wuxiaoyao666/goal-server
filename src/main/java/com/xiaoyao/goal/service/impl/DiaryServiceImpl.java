@@ -1,25 +1,33 @@
 package com.xiaoyao.goal.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ObjUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.hankcs.hanlp.HanLP;
+import com.hankcs.hanlp.seg.common.Term;
 import com.xiaoyao.goal.entity.Diary;
+import com.xiaoyao.goal.entity.DiaryKeyword;
 import com.xiaoyao.goal.entity.dto.SaveDiaryDTO;
 import com.xiaoyao.goal.entity.dto.SearchDiaryDTO;
 import com.xiaoyao.goal.entity.vo.DiaryVO;
-import com.xiaoyao.goal.entity.vo.RecordDaysVO;
 import com.xiaoyao.goal.mapper.DiaryMapper;
+import com.xiaoyao.goal.service.IDiaryKeywordService;
 import com.xiaoyao.goal.service.IDiaryService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.xiaoyao.goal.utils.BlindGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -27,85 +35,92 @@ import java.util.List;
  * </p>
  *
  * @author 逍遥
- * @since 2025-07-27
+ * @since 2025-10-08
  */
 @Service
 public class DiaryServiceImpl extends ServiceImpl<DiaryMapper, Diary> implements IDiaryService {
 
+    @Autowired
+    private IDiaryKeywordService diaryKeywordService;
+
     @Override
-    public long sync(SaveDiaryDTO body) {
+    @Transactional
+    public DiaryVO sync(SaveDiaryDTO body) {
         Long userId = StpUtil.getLoginIdAsLong();
-        LocalDate targetDate = body.getDate();
-        // 查询当天日记
-        Diary existingDiary = getOne(Wrappers.lambdaQuery(Diary.class)
-                .eq(Diary::getUserId, userId)
-                .ge(Diary::getCreateTime, targetDate.atStartOfDay())
-                .lt(Diary::getCreateTime, targetDate.plusDays(1).atStartOfDay()));
-        String searchIndex = BlindGenerator.segment(body.getTitle() + " " + body.getContent());
-        Diary diary;
-        if (existingDiary != null) {
-            // 存在则使用已有日记进行修改
-            diary = existingDiary;
-            diary.setTitle(body.getTitle());
-            diary.setContent(body.getContent());
-            diary.setSearchIndex(searchIndex);
-        } else {
-            // 不存在则创建新日记
-            diary = Diary.builder()
-                    .userId(userId)
-                    .title(body.getTitle())
-                    .content(body.getContent())
-                    .searchIndex(searchIndex)
-                    .createTime(LocalDateTime.of(targetDate, LocalTime.now()))
-                    .build();
-        }
+        Diary diary = Diary.builder()
+                .id(body.getId())
+                .userId(userId)
+                .title(body.getTitle())
+                .content(body.getContent())
+                .tags(body.getTags()).build();
+        // 保存或修改日记
         saveOrUpdate(diary);
-        return diary.getId();
-    }
-
-    @Override
-    public DiaryVO info(LocalDate body) {
-        Diary diary = getOne(Wrappers.lambdaQuery(Diary.class)
-                .select(Diary::getId, Diary::getTitle, Diary::getContent)
-                .eq(Diary::getUserId, StpUtil.getLoginIdAsLong())
-                .ge(Diary::getCreateTime, body.atStartOfDay())
-                .lt(Diary::getCreateTime, body.plusDays(1).atStartOfDay()));
-        if (diary == null) return null;
-        return DiaryVO.builder()
-                .id(diary.getId())
-                .title(diary.getTitle())
-                .content(diary.getContent()).build();
-    }
-
-    @Override
-    public RecordDaysVO recordDays() {
-        List<Diary> diaries = list(Wrappers.lambdaQuery(Diary.class).select(Diary::getCreateTime).eq(Diary::getUserId, StpUtil.getLoginIdAsLong()).orderByDesc(Diary::getCreateTime));
-        if (diaries == null || diaries.isEmpty()) {
-            return new RecordDaysVO(0, 0);
+        if (ObjUtil.isNotNull(body.getId())) {
+            // 删除旧关键词关联
+            diaryKeywordService.remove(Wrappers.<DiaryKeyword>lambdaQuery().eq(DiaryKeyword::getDiaryId, body.getId()));
         }
-        List<LocalDateTime> recordDates = diaries.stream().map(Diary::getCreateTime).toList();
-        // 计算连续天数
-        int continuousDays = 1;
-        LocalDate nextDate = recordDates.getFirst().toLocalDate();
-        for (int i = 1; i < recordDates.size(); i++) {
-            LocalDate currentDate = recordDates.get(i).toLocalDate();
-            if (currentDate.plusDays(1).equals(nextDate)) {
-                continuousDays++;
-            } else {
-                // 非连续日期
-                break;
+        // 生成盲索引
+        Set<DiaryKeyword> diaryKeywords = new HashSet<>();
+        List<Term> terms = HanLP.segment((CollUtil.isNotEmpty(diary.getTags()) ? String.join(StrUtil.SPACE, diary.getTags()) : StrUtil.EMPTY) + StrUtil.SPACE + body.getTitle() + StrUtil.SPACE + body.getContent());
+        terms.forEach(term -> {
+            String word = term.word;
+            if (StrUtil.isNotBlank(word)) {
+                diaryKeywords.add(DiaryKeyword.builder()
+                        .diaryId(diary.getId())
+                        .keywordHash(SecureUtil.md5(word))
+                        .build());
             }
-            nextDate = currentDate;
+        });
+        if (CollUtil.isNotEmpty(diaryKeywords)) {
+            diaryKeywordService.saveBatch(diaryKeywords);
         }
-        return new RecordDaysVO(recordDates.size(), continuousDays);
+        return DiaryVO.toDiaryVO(getById(diary.getId()));
     }
 
     @Override
-    public IPage<Diary> search(SearchDiaryDTO body) {
-        String keywordHash = BlindGenerator.hashToken(body.getKeyword());
-        Page<Diary> page = new Page<>(body.getCurrent(), body.getLimit());
-        LambdaQueryWrapper<Diary> wrapper = Wrappers.lambdaQuery(Diary.class).select(Diary::getTitle, Diary::getContent, Diary::getCreateTime).eq(Diary::getUserId, StpUtil.getLoginIdAsLong())
-                .like(Diary::getSearchIndex, "%" + keywordHash + "%");
-        return page(page, wrapper);
+    public IPage<DiaryVO> search(SearchDiaryDTO body) {
+        IPage<Diary> diaryPage;
+        if (StrUtil.isNotBlank(body.getKeyword())) {
+            List<Term> terms = HanLP.segment(body.getKeyword());
+            // 提取分词结果
+            Set<String> keywordSet = terms.stream()
+                    .map(term -> SecureUtil.md5(term.word))
+                    .filter(StrUtil::isNotBlank)
+                    .collect(Collectors.toSet());
+            List<DiaryKeyword> diaryKeywords = diaryKeywordService.list(
+                    new LambdaQueryWrapper<DiaryKeyword>()
+                            .in(DiaryKeyword::getKeywordHash, keywordSet)
+            );
+            if (diaryKeywords.isEmpty()) return new Page<>(body.getCurrent(), body.getLimit());
+            // 提取命中的 ID
+            Set<Long> diaryIds = diaryKeywords.stream().map(DiaryKeyword::getDiaryId).collect(Collectors.toSet());
+            diaryPage = page(
+                    new Page<>(body.getCurrent(), body.getLimit()),
+                    new LambdaQueryWrapper<Diary>()
+                            .in(Diary::getId, diaryIds)
+                            .eq(Diary::getUserId, StpUtil.getLoginIdAsLong())
+                            .orderByDesc(Diary::getCreateTime)
+            );
+        } else {
+            diaryPage = page(
+                    new Page<>(body.getCurrent(), body.getLimit()),
+                    new LambdaQueryWrapper<Diary>()
+                            .eq(Diary::getUserId, StpUtil.getLoginIdAsLong())
+                            .orderByDesc(Diary::getCreateTime)
+            );
+        }
+        List<DiaryVO> diaryData = diaryPage.getRecords().stream()
+                .map(DiaryVO::toDiaryVO).toList();
+        IPage<DiaryVO> result = new Page<>(body.getCurrent(), body.getLimit());
+        result.setRecords(diaryData);
+        result.setTotal(diaryPage.getTotal());
+        return result;
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long id) {
+        diaryKeywordService.remove(Wrappers.<DiaryKeyword>lambdaQuery().eq(DiaryKeyword::getDiaryId, id));
+        removeById(id);
     }
 }

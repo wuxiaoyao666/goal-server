@@ -6,9 +6,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.xiaoyao.goal.entity.dto.SaveDiaryDTO;
 import com.xiaoyao.goal.entity.dto.SearchDiaryDTO;
 import com.xiaoyao.goal.entity.vo.DiaryVO;
-import com.xiaoyao.goal.entity.vo.RecordDaysVO;
-
-import java.time.LocalDate;
 
 /**
  * <p>
@@ -16,34 +13,30 @@ import java.time.LocalDate;
  * </p>
  *
  * @author 逍遥
- * @since 2025-07-27
+ * @since 2025-10-08
  */
 public interface IDiaryService extends IService<Diary> {
 
     /**
-     * 同步数据
+     * 同步日记数据
+     *
      * @param body 参数
      * @return 数据 ID
      */
-    long sync(SaveDiaryDTO body);
-
-    /**
-     * 查询日记
-     * @param body 日期
-     * @return 日记详情
-     */
-    DiaryVO info(LocalDate body);
-
-    /**
-     * 获取记录天数
-     * @return 总记录天数和连续记录天数
-     */
-    RecordDaysVO recordDays();
+    DiaryVO sync(SaveDiaryDTO body);
 
     /**
      * 日记搜索
+     *
      * @param body 搜索参数
      * @return 搜索结果
      */
-    IPage<Diary> search(SearchDiaryDTO body);
+    IPage<DiaryVO> search(SearchDiaryDTO body);
+
+    /**
+     * 删除日记
+     * @param id
+     * @return
+     */
+    void delete(Long id);
 }
