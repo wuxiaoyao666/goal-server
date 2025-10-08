@@ -51,4 +51,9 @@ public class TaskController {
     public Result getCurrentTask() {
         return Result.success(taskService.getCurrentTask());
     }
+
+    @PostMapping("removeById")
+    public Result removeById(@RequestBody Long id) {
+        return Result.success(taskService.removeById(id));
+    }
 }
