@@ -20,10 +20,14 @@ import com.xiaoyao.goal.mapper.DiaryMapper;
 import com.xiaoyao.goal.service.IDiaryKeywordService;
 import com.xiaoyao.goal.service.IDiaryService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -37,11 +41,31 @@ import java.util.stream.Collectors;
  * @author 逍遥
  * @since 2025-10-08
  */
+@Slf4j
 @Service
 public class DiaryServiceImpl extends ServiceImpl<DiaryMapper, Diary> implements IDiaryService {
 
+    /**
+     * 排除的词类型
+     * w: 标点符号 f: 方位词 p: 介词 c: 连词 y: 语气词 o: 拟声词 q: 量词
+     */
+    private final Set<String> StopNatures = Set.of("w", "f", "p", "c", "y", "o", "q");
+
+    private final Set<String> StopWords = new HashSet<>();
+
     @Autowired
     private IDiaryKeywordService diaryKeywordService;
+
+    @PostConstruct
+    public void initStopWords() {
+        try {
+            List<String> lines = Files.readAllLines(Paths.get(ClassLoader.getSystemResource("stopwords.txt").toURI()));
+            StopWords.addAll(lines.stream().map(String::trim).filter(StrUtil::isNotBlank).collect(Collectors.toSet()));
+            log.info("加载停用词表完成。");
+        } catch (Exception e) {
+            log.error("加载停用词表失败 {} 。", e.getMessage());
+        }
+    }
 
     @Override
     @Transactional
@@ -64,7 +88,8 @@ public class DiaryServiceImpl extends ServiceImpl<DiaryMapper, Diary> implements
         List<Term> terms = HanLP.segment((CollUtil.isNotEmpty(diary.getTags()) ? String.join(StrUtil.SPACE, diary.getTags()) : StrUtil.EMPTY) + StrUtil.SPACE + body.getTitle() + StrUtil.SPACE + body.getContent());
         terms.forEach(term -> {
             String word = term.word;
-            if (StrUtil.isNotBlank(word)) {
+            String nature = term.nature.toString();
+            if (StrUtil.isNotBlank(word) && StrUtil.isNotBlank(nature) && !StopWords.contains(word) && !StopNatures.contains(nature)) {
                 diaryKeywords.add(DiaryKeyword.builder()
                         .diaryId(diary.getId())
                         .keywordHash(SecureUtil.md5(word))
