@@ -56,6 +56,9 @@ public class DiaryServiceImpl extends ServiceImpl<DiaryMapper, Diary> implements
     @Autowired
     private IDiaryKeywordService diaryKeywordService;
 
+    /**
+     * 初始化停用词
+     */
     @PostConstruct
     public void initStopWords() {
         try {
