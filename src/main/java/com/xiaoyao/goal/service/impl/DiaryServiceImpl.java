@@ -2,6 +2,7 @@ package com.xiaoyao.goal.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
@@ -26,8 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -59,8 +59,8 @@ public class DiaryServiceImpl extends ServiceImpl<DiaryMapper, Diary> implements
     @PostConstruct
     public void initStopWords() {
         try {
-            List<String> lines = Files.readAllLines(Paths.get(ClassLoader.getSystemResource("stopwords.txt").toURI()));
-            StopWords.addAll(lines.stream().map(String::trim).filter(StrUtil::isNotBlank).collect(Collectors.toSet()));
+            String lines = ResourceUtil.readUtf8Str("stopwords.txt");
+            StopWords.addAll(Arrays.stream(lines.split(System.lineSeparator())).collect(Collectors.toSet()));
             log.info("加载停用词表完成。");
         } catch (Exception e) {
             log.error("加载停用词表失败 {} 。", e.getMessage());
