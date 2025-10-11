@@ -10,6 +10,9 @@ spring:
   web:
     resources:
       static-locations: classpath:/web/
+  threads:
+    virtual:
+      enabled: true
 sa-token:
   token-name: token
   # Jwt 密钥
