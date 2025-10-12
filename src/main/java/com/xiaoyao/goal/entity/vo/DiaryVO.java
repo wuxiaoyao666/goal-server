@@ -11,6 +11,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 import java.util.List;
 
@@ -66,9 +68,14 @@ public class DiaryVO {
     public static DiaryVO toDiaryVO(Diary diary){
         DiaryVO diaryVO = new DiaryVO();
         BeanUtil.copyProperties(diary, diaryVO);
-        String content = diary.getContent();
+        /*String content = diary.getContent();
+        if (!StrUtil.isBlank(content)) {
+            // JsonP 去除标签
+            Document doc = Jsoup.parse(content);
+            content = doc.text().trim();
+        }
         String preview = StrUtil.isBlank(content) ? StrUtil.EMPTY : content.substring(0, Math.min(content.length(), 50));
-        diaryVO.setPreview(preview);
+        diaryVO.setPreview(preview);*/
         diaryVO.setCreateTime(DateUtil.format(diary.getCreateTime(), GoalConstant.DefaultDateTimeFormat));
         diaryVO.setUpdateTime(DateUtil.format(diary.getUpdateTime(), GoalConstant.DefaultDateTimeFormat));
         return diaryVO;
