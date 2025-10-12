@@ -5,6 +5,7 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.xiaoyao.goal.config.CosConfig;
 import com.xiaoyao.goal.constant.GoalConstant;
+import com.xiaoyao.goal.entity.vo.PictureVO;
 import com.xiaoyao.goal.exception.GoalException;
 import com.xiaoyao.goal.service.PictureService;
 import com.xiaoyao.goal.utils.CosManager;
@@ -30,7 +31,7 @@ public class PictureServiceImpl implements PictureService {
     private CosManager cosManager;
 
     @Override
-    public String upload(MultipartFile file, Long id) {
+    public PictureVO upload(MultipartFile file, Long id) {
         if (file == null || file.isEmpty())
             throw new GoalException("文件不能为空");
         // 1. 校验文件后缀
@@ -47,7 +48,7 @@ public class PictureServiceImpl implements PictureService {
             file.transferTo(tempFile);
             // 3. 上传图片
             cosManager.upload(uploadPath, tempFile);
-            return cosConfig.getHost() + uploadPath;
+            return new PictureVO(cosConfig.getHost() + uploadPath,file.getSize(),uploadFileName);
         } catch (Exception e) {
             throw new GoalException(e.getMessage());
         } finally {

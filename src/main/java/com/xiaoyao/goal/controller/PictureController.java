@@ -21,7 +21,7 @@ public class PictureController {
     private PictureService pictureService;
 
     @PostMapping("/upload")
-    public Result<String> upload(@RequestPart("file") MultipartFile file) {
+    public Result upload(@RequestPart("file") MultipartFile file) {
         return Result.success(pictureService.upload(file, StpUtil.getLoginIdAsLong()));
     }
 }
