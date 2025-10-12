@@ -23,6 +23,8 @@ import com.xiaoyao.goal.service.IDiaryService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -82,13 +84,19 @@ public class DiaryServiceImpl extends ServiceImpl<DiaryMapper, Diary> implements
                 .tags(body.getTags()).build();
         // 保存或修改日记
         saveOrUpdate(diary);
+        String content = body.getContent();
+        if (!StrUtil.isBlank(content)) {
+            // JsonP 去除标签
+            Document doc = Jsoup.parse(content);
+            content = doc.text().trim();
+        }
         if (ObjUtil.isNotNull(body.getId())) {
             // 删除旧关键词关联
             diaryKeywordService.remove(Wrappers.<DiaryKeyword>lambdaQuery().eq(DiaryKeyword::getDiaryId, body.getId()));
         }
         // 生成盲索引
         Set<DiaryKeyword> diaryKeywords = new HashSet<>();
-        List<Term> terms = HanLP.segment((CollUtil.isNotEmpty(diary.getTags()) ? String.join(StrUtil.SPACE, diary.getTags()) : StrUtil.EMPTY) + StrUtil.SPACE + body.getTitle() + StrUtil.SPACE + body.getContent());
+        List<Term> terms = HanLP.segment((CollUtil.isNotEmpty(diary.getTags()) ? String.join(StrUtil.SPACE, diary.getTags()) : StrUtil.EMPTY) + StrUtil.SPACE + body.getTitle() + StrUtil.SPACE + content);
         terms.forEach(term -> {
             String word = term.word;
             String nature = term.nature.toString();
@@ -142,6 +150,7 @@ public class DiaryServiceImpl extends ServiceImpl<DiaryMapper, Diary> implements
         IPage<DiaryVO> result = new Page<>(body.getCurrent(), body.getLimit());
         result.setRecords(diaryData);
         result.setTotal(diaryPage.getTotal());
+        log.info("result={}", result);
         return result;
     }
 

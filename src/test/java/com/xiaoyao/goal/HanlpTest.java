@@ -4,6 +4,9 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.hankcs.hanlp.HanLP;
 import com.hankcs.hanlp.seg.common.Term;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.springframework.web.util.HtmlUtils;
 
 import java.util.HashSet;
 import java.util.List;
@@ -15,22 +18,11 @@ import java.util.Set;
 public class HanlpTest {
     private static final Set<String> StopNatures = Set.of("w", "f", "p", "c", "y", "o", "q");
     public static void main(String[] args) {
-        String content = "这几天都有雨，还是决定骑车上班，早上迟到了十五分钟，到公司之后鞋子里都是水。\n" +
-                " \n" +
-                "Goal 进行了一些优化：\n" +
-                "1. 点击日记再点击时间统计管理标签之后，页面背景会变为紫色；\n" +
-                "2. 新建日记报错；\n" +
-                "3. 优化部分页面样式；\n" +
-                "4. 写日记保存后，进入timing，再进入diary返回来，会发现日记不是保存后的，需要点击其它日记再点击当前日记才能更新。\n" +
-                "\n" +
-                "Eagle_S\n" +
-                "1. Eagle_S 关闭 Tau 修正计算误差\n" +
-                "1.1. 先是整理了一遍完整计算；\n" +
-                "1.2. 对方说是因为分母（Matrix）没有关闭 Tau 修正，经过我的排查 Matrix 插值计算取得点是 RawData 前的，和 Tau 计算无关。\n" +
-                "\n" +
-                "趁着雨停了，赶紧把自行车送到晨姐店里做一个小保养。";
+        String content = "<div class=\"lake-content\" typography=\"classic\"><p id=\"u09aa4863\" class=\"ne-p\"><span class=\"ne-text\">Goal 做了一些优化</span></p><p id=\"u3be878ba\" class=\"ne-p\"><span class=\"ne-text\">1. 早上到公司发现日记框居然可以下拉，于是乎就用 Element-Plus 的 Tag 组件优化了一下，虽然 Focus 后边框是蓝色的，不过也可以接受哈哈哈哈哈。耗时 22 分 30秒。</span></p><p id=\"u321e2aac\" class=\"ne-p\"><br></p><p id=\"u99c0dea6\" class=\"ne-p\"><span class=\"ne-text\">工作</span></p><p id=\"ucf9aeaa7\" class=\"ne-p\"><span class=\"ne-text\">电脑太卡，利用中午时间装了个系统，电脑是 i7 6代的 cpu，居然不能装 win11。下午两点四十左右装完，还是很卡，最终决定格式化电脑了。</span></p><p id=\"u713d68fa\" class=\"ne-p\"><br></p><p id=\"ub77dd5be\" class=\"ne-p\"><span class=\"ne-text\">Eagle_S</span></p><p id=\"u8e4435ac\" class=\"ne-p\"><span class=\"ne-text\">1. Matrix 的插值计算，不管是否开启 Tau 都要基于最新 RawData 后的曲线做计算，上午确定好需求，本来打算中午之前搞定的，结果公司电脑太卡了，于是乎装了个系统，下午用欧陆的涉密笔记本做开发吧。</span></p><p id=\"uf87fe490\" class=\"ne-p\"><br></p><p id=\"u2b00620e\" class=\"ne-p\"><span class=\"ne-text\">顶着雨回家，到家先吃个饭，看两集忍者神龟，从下班回家到吃完饭已经过去两小时了。</span></p></div>";
+        String s = richTextToPureText(content);
+        System.out.println(s);
         Set<String> wordSet = new HashSet<>();
-        List<Term> terms = HanLP.segment(content);
+        List<Term> terms = HanLP.segment(s);
         terms.forEach(term -> {
             String word = term.word;
             String nature = term.nature.toString();
@@ -41,5 +33,12 @@ public class HanlpTest {
         });
         System.out.println(JSONUtil.toJsonStr(wordSet));
         System.out.println(wordSet.size());
+    }
+
+    private static String richTextToPureText(String richText) {
+        if (StrUtil.isBlank(richText)) return StrUtil.EMPTY;
+        // Jsoup解析HTML并提取纯文本（自动处理所有标签和属性）
+        Document doc = Jsoup.parse(richText);
+        return doc.text().trim();
     }
 }
