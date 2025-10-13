@@ -21,7 +21,8 @@ sa-token:
   is-read-cookie: false
 system:
   cors-enable: true # 是否开启跨域
-qiniu:
+cos:
+  type: tencent
   host: http://t40u7w44h.hb-bkt.clouddn.com/
   accessKey: ovborwx3hGPexZVZ25DKFoTXQ0ZNAcJlSkLt9sdz
   secretKey: MG9uKh8FcEaxa4pHdghc5uX3q7B8igEpLJZlzKPw

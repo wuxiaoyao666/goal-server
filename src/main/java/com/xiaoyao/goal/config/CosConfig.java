@@ -9,8 +9,10 @@ import org.springframework.context.annotation.Configuration;
  */
 @Data
 @Configuration
-@ConfigurationProperties(prefix = "qiniu")
+@ConfigurationProperties(prefix = "cos")
 public class CosConfig {
+
+    private String type;
 
     private String host;
 
