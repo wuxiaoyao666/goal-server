@@ -1,6 +1,6 @@
 package com.xiaoyao.goal.manager;
 
-import com.xiaoyao.goal.config.CosConfig;
+import com.qcloud.cos.COSClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
@@ -15,7 +15,7 @@ import java.io.File;
 public class TencentCosManager implements CosManager{
 
     @Autowired
-    private CosConfig cosConfig;
+    private COSClient cosClient;
 
     @Override
     public void upload(String key, File file) {
