@@ -1,10 +1,7 @@
 package com.xiaoyao.goal.cos;
 
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONUtil;
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.model.PutObjectRequest;
-import com.qcloud.cos.model.PutObjectResult;
 import com.xiaoyao.goal.config.CosConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +16,7 @@ import java.io.File;
 @Slf4j
 @Component
 @ConditionalOnProperty(prefix = "cos", name = "type", havingValue = "tencent")
-public class TencentCosManager implements CosManager{
+public class TencentCosManager implements CosManager {
 
     @Autowired
     private CosConfig cosConfig;
@@ -30,8 +27,7 @@ public class TencentCosManager implements CosManager{
     @Override
     public String upload(String key, File file) {
         PutObjectRequest putObjectRequest = new PutObjectRequest(cosConfig.getBucket(), key, file);
-        PutObjectResult putObjectResult = cosClient.putObject(putObjectRequest);
-        log.debug(JSONUtil.toJsonStr(putObjectResult));
-        return StrUtil.EMPTY;
+        cosClient.putObject(putObjectRequest);
+        return cosConfig.getHost() + key;
     }
 }

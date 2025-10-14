@@ -32,7 +32,7 @@ public class CosConfig {
     @ConditionalOnProperty(prefix = "cos", name = "type", havingValue = "tencent")
     public COSClient cosClient() {
         COSCredentials cred = new BasicCOSCredentials(accessKey, secretKey);
-        Region region = new Region(bucket);
+        Region region = new Region("ap-beijing");
         ClientConfig clientConfig = new ClientConfig(region);
         clientConfig.setHttpProtocol(HttpProtocol.https);
         return new COSClient(cred, clientConfig);

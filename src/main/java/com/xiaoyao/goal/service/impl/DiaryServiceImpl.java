@@ -150,7 +150,6 @@ public class DiaryServiceImpl extends ServiceImpl<DiaryMapper, Diary> implements
         IPage<DiaryVO> result = new Page<>(body.getCurrent(), body.getLimit());
         result.setRecords(diaryData);
         result.setTotal(diaryPage.getTotal());
-        log.info("result={}", result);
         return result;
     }
 

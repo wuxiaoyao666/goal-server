@@ -23,9 +23,9 @@ system:
   cors-enable: true # 是否开启跨域
 cos:
   type: tencent
-  host: http://t40u7w44h.hb-bkt.clouddn.com/
-  accessKey: 1300227149
-  secretKey: AKIDc6NQEo9G7j5EArLaaKq7A0by6xax4xe7
+  host: https://${cos.bucket}.cos.ap-beijing.myqcloud.com/
+  accessKey: AKIDiRxTovpY5PWO4Zu1xiGdnjQwFNI0Xr0w
+  secretKey: rXzEAze8QWUM4bx64pOlz1qU1UkrunU5
   bucket: xiaoyao-diary-1300227149
 mybatis-plus:
   configuration:
