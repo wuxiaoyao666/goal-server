@@ -53,6 +53,9 @@ public class DiaryServiceImpl extends ServiceImpl<DiaryMapper, Diary> implements
      */
     private final Set<String> StopNatures = Set.of("w", "f", "p", "c", "y", "o", "q");
 
+    /**
+     * 停用词列表
+     */
     private final Set<String> StopWords = new HashSet<>();
 
     @Autowired
