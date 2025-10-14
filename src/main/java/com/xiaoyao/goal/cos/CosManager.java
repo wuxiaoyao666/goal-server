@@ -12,6 +12,7 @@ public interface CosManager {
      *
      * @param key  路径
      * @param file 文件名
+     * @return 图片链接
      */
-    void upload(String key, File file);
+    String upload(String key, File file);
 }

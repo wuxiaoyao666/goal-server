@@ -3,16 +3,20 @@ package com.xiaoyao.goal.service.impl;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.crypto.digest.DigestUtil;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.xiaoyao.goal.config.CosConfig;
 import com.xiaoyao.goal.constant.GoalConstant;
 import com.xiaoyao.goal.entity.Picture;
+import com.xiaoyao.goal.entity.bo.ImageMetadataBO;
 import com.xiaoyao.goal.entity.vo.PictureVO;
 import com.xiaoyao.goal.exception.GoalException;
 import com.xiaoyao.goal.cos.CosManager;
 import com.xiaoyao.goal.mapper.PictureMapper;
 import com.xiaoyao.goal.service.IPictureService;
+import com.xiaoyao.goal.utils.ImageUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,9 +30,6 @@ import java.util.Date;
 @Slf4j
 @Service
 public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture> implements IPictureService {
-
-    @Autowired
-    private CosConfig cosConfig;
 
     @Autowired
     private CosManager cosManager;
@@ -49,9 +50,24 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture> impl
         try {
             tempFile = File.createTempFile(uploadPath, null);
             file.transferTo(tempFile);
-            // 3. 上传图片
-            cosManager.upload(uploadPath, tempFile);
-            return new PictureVO(cosConfig.getHost() + uploadPath,file.getSize(),uploadFileName);
+            // 3. 校验图片是否上传过
+            String hash = DigestUtil.md5Hex(tempFile);
+            Picture findByHash = getOne(Wrappers.<Picture>lambdaQuery().eq(Picture::getHash, hash));
+            if (findByHash != null) {
+                return new PictureVO(findByHash.getUrl(), findByHash.getPicSize(), findByHash.getName());
+            }
+            // 4. 上传图片
+            String url = cosManager.upload(uploadPath, tempFile);
+            // 5. 入库
+            ImageMetadataBO imageMetadata = ImageUtils.getImageMetadata(tempFile);
+            Picture picture = new Picture();
+            BeanUtils.copyProperties(imageMetadata, picture);
+            picture.setUrl(url);
+            picture.setName(uploadFileName);
+            picture.setHash(hash);
+            picture.setUserId(id);
+            save(picture);
+            return new PictureVO(url, imageMetadata.getPicSize(), uploadFileName);
         } catch (Exception e) {
             throw new GoalException(e.getMessage());
         } finally {

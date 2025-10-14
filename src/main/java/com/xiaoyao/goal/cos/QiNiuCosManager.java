@@ -24,7 +24,7 @@ public class QiNiuCosManager implements CosManager{
     private CosConfig cosConfig;
 
     @Override
-    public void upload(String key, File file) {
+    public String upload(String key, File file) {
         // 构造一个带指定 Region 对象的配置类
         Configuration cfg = Configuration.create(Region.qvmRegion1());
         // 指定分片上传版本
@@ -35,6 +35,7 @@ public class QiNiuCosManager implements CosManager{
         String upToken = auth.uploadToken(cosConfig.getBucket());
         try {
             uploadManager.put(file, key, upToken);
+            return cosConfig.getHost() + key;
         } catch (QiniuException ex) {
             throw new GoalException(ex.getMessage());
         }

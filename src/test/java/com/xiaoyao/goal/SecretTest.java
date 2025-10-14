@@ -1,11 +1,12 @@
 package com.xiaoyao.goal;
 
 import cn.hutool.core.util.CharsetUtil;
-import cn.hutool.crypto.Mode;
-import cn.hutool.crypto.Padding;
 import cn.hutool.crypto.SecureUtil;
+import cn.hutool.crypto.digest.DigestUtil;
 import cn.hutool.crypto.symmetric.AES;
 import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
+
+import java.io.File;
 
 /**
  * @author 逍遥
@@ -14,7 +15,14 @@ public class SecretTest {
     private static final String Secret = "SengeSenge520...";
     private static final AES aes = SecureUtil.aes(Secret.getBytes());
 
-    public static void main(String[] args) {
+    static void main() {
+        File file1 = new File("pom.xml");
+        File file2 = new File("pom.xml");
+        System.out.println(DigestUtil.md5Hex(file1));
+        System.out.println(DigestUtil.md5Hex(file2));
+    }
+
+    static void aes(){
         String content = "test中文哈哈哈哈哈哈";
 
         // 随机生成密钥

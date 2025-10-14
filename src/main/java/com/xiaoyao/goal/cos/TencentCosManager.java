@@ -1,5 +1,6 @@
 package com.xiaoyao.goal.cos;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.model.PutObjectRequest;
@@ -27,9 +28,10 @@ public class TencentCosManager implements CosManager{
     private COSClient cosClient;
 
     @Override
-    public void upload(String key, File file) {
+    public String upload(String key, File file) {
         PutObjectRequest putObjectRequest = new PutObjectRequest(cosConfig.getBucket(), key, file);
         PutObjectResult putObjectResult = cosClient.putObject(putObjectRequest);
         log.debug(JSONUtil.toJsonStr(putObjectResult));
+        return StrUtil.EMPTY;
     }
 }
