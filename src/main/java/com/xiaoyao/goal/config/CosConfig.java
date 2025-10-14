@@ -20,8 +20,6 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "cos")
 public class CosConfig {
 
-    private String type;
-
     private String host;
 
     private String accessKey;

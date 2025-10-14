@@ -1,4 +1,4 @@
-package com.xiaoyao.goal.manager;
+package com.xiaoyao.goal.cos;
 
 import com.qiniu.common.QiniuException;
 import com.qiniu.storage.Configuration;

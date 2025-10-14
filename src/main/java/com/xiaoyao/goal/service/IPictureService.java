@@ -1,12 +1,19 @@
 package com.xiaoyao.goal.service;
 
+import com.xiaoyao.goal.entity.Picture;
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.xiaoyao.goal.entity.vo.PictureVO;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
+ * <p>
+ * 图片 服务类
+ * </p>
+ *
  * @author 逍遥
+ * @since 2025-10-14
  */
-public interface PictureService {
+public interface IPictureService extends IService<Picture> {
 
     /**
      * 文件上传

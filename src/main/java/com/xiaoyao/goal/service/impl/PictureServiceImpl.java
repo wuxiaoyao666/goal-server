@@ -3,12 +3,15 @@ package com.xiaoyao.goal.service.impl;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.RandomUtil;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xiaoyao.goal.config.CosConfig;
 import com.xiaoyao.goal.constant.GoalConstant;
+import com.xiaoyao.goal.entity.Picture;
 import com.xiaoyao.goal.entity.vo.PictureVO;
 import com.xiaoyao.goal.exception.GoalException;
-import com.xiaoyao.goal.manager.CosManager;
-import com.xiaoyao.goal.service.PictureService;
+import com.xiaoyao.goal.cos.CosManager;
+import com.xiaoyao.goal.mapper.PictureMapper;
+import com.xiaoyao.goal.service.IPictureService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +25,7 @@ import java.util.Date;
  */
 @Slf4j
 @Service
-public class PictureServiceImpl implements PictureService {
+public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture> implements IPictureService {
 
     @Autowired
     private CosConfig cosConfig;

@@ -24,9 +24,9 @@ system:
 cos:
   type: tencent
   host: http://t40u7w44h.hb-bkt.clouddn.com/
-  accessKey: ovborwx3hGPexZVZ25DKFoTXQ0ZNAcJlSkLt9sdz
-  secretKey: MG9uKh8FcEaxa4pHdghc5uX3q7B8igEpLJZlzKPw
-  bucket: xiaoyao-diary
+  accessKey: 1300227149
+  secretKey: AKIDc6NQEo9G7j5EArLaaKq7A0by6xax4xe7
+  bucket: xiaoyao-diary-1300227149
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
