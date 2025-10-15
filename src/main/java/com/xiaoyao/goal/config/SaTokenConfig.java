@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
  * @author 逍遥
  */
 @Configuration
-public class SaTokenConfiguration {
+public class SaTokenConfig {
     @Bean
     public StpLogic getStpLogicJwt() {
         return new StpLogicJwtForStateless();

@@ -10,7 +10,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  */
 @Configuration
 @ConditionalOnProperty(name = "system.cors-enable", havingValue = "true")
-public class CorsConditionalConfiguration implements WebMvcConfigurer {
+public class CorsConditionalConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
