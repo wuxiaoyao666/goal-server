@@ -52,7 +52,7 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture> impl
             if (existPicture != null) {
                 return new PictureVO(existPicture.getUrl(), existPicture.getPicSize(), existPicture.getName());
             }
-            // 用 hash 生成文件名，防止并发上传同一张图片
+            // 用 hash 生成文件名，防止一张图片被重复上传多次
             String uploadFileName = String.format("%s.%s", hash, suffix);
             String uploadPath = String.format("%s/%s", userId, uploadFileName);
             // 上传图片
