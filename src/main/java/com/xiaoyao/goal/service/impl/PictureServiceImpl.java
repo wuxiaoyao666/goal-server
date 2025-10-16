@@ -1,8 +1,6 @@
 package com.xiaoyao.goal.service.impl;
 
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.RandomUtil;
 import cn.hutool.crypto.digest.DigestUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -18,11 +16,11 @@ import com.xiaoyao.goal.utils.ImageUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.util.Date;
 
 /**
  * @author 逍遥
@@ -35,43 +33,54 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture> impl
     private CosManager cosManager;
 
     @Override
-    public PictureVO upload(MultipartFile file, Long id) {
+    public PictureVO upload(MultipartFile file, Long userId) {
         if (file == null || file.isEmpty())
             throw new GoalException("文件不能为空");
-        // 1. 校验文件后缀
+        // 校验文件后缀
         String suffix = FileUtil.getSuffix(file.getOriginalFilename());
         if (!GoalConstant.AllowUploadImageList.contains(suffix))
             throw new GoalException("不支持的文件类型");
-        // 2. 生成新的图片文件名和目录
-        String uuid = RandomUtil.randomString(16);
-        String uploadFileName = String.format("%s_%s.%s", DateUtil.formatDate(new Date()), uuid, suffix);
-        String uploadPath = String.format("%s/%s", id, uploadFileName);
         File tempFile = null;
+        String hash = null;
         try {
-            tempFile = File.createTempFile(uploadPath, null);
+            tempFile = File.createTempFile("upload_", ".tmp");
             file.transferTo(tempFile);
-            // 3. 校验图片是否上传过
-            String hash = DigestUtil.md5Hex(tempFile);
-            Picture findByHash = getOne(Wrappers.<Picture>lambdaQuery().eq(Picture::getHash, hash));
+            // 生成文件 hash 码
+            hash = DigestUtil.md5Hex(tempFile);
+            // 校验图片是否上传过
+            Picture findByHash = getOne(Wrappers.<Picture>lambdaQuery().eq(Picture::getHash, hash).eq(Picture::getUserId, userId));
             if (findByHash != null) {
                 return new PictureVO(findByHash.getUrl(), findByHash.getPicSize(), findByHash.getName());
             }
-            // 4. 上传图片
+            // 用 hash 生成文件名，防止并发上传同一张图片
+            String uploadFileName = String.format("%s.%s", hash, suffix);
+            String uploadPath = String.format("%s/%s", userId, uploadFileName);
+            // 上传图片
             String url = cosManager.upload(uploadPath, tempFile);
-            // 5. 入库
+            // 入库
             ImageMetadataBO imageMetadata = ImageUtils.getImageMetadata(tempFile);
             Picture picture = new Picture();
             BeanUtils.copyProperties(imageMetadata, picture);
             picture.setUrl(url);
             picture.setName(uploadFileName);
             picture.setHash(hash);
-            picture.setUserId(id);
+            picture.setUserId(userId);
             save(picture);
             return new PictureVO(url, imageMetadata.getPicSize(), uploadFileName);
+        } catch (DuplicateKeyException e) {
+            // 并发触发唯一约束，再次查询图片
+            Picture existPic = lambdaQuery()
+                    .eq(Picture::getHash, hash)
+                    .eq(Picture::getUserId, userId)
+                    .one();
+            if (existPic != null) {
+                return new PictureVO(existPic.getUrl(), existPic.getPicSize(), existPic.getName());
+            }
+            throw new GoalException("服务异常，请重试.");
         } catch (Exception e) {
             throw new GoalException(e.getMessage());
         } finally {
-            if (tempFile != null) {
+            if (tempFile != null && tempFile.exists()) {
                 boolean deleteResult = tempFile.delete();
                 if (!deleteResult) {
                     log.error("临时文件删除异常,路径:{}", tempFile.getAbsolutePath());
