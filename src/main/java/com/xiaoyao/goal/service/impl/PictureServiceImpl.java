@@ -48,9 +48,9 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture> impl
             // 生成文件 hash 码
             hash = DigestUtil.md5Hex(tempFile);
             // 校验图片是否上传过
-            Picture findByHash = getOne(Wrappers.<Picture>lambdaQuery().eq(Picture::getHash, hash).eq(Picture::getUserId, userId));
-            if (findByHash != null) {
-                return new PictureVO(findByHash.getUrl(), findByHash.getPicSize(), findByHash.getName());
+            Picture existPicture = getOne(Wrappers.<Picture>lambdaQuery().eq(Picture::getUserId, userId).eq(Picture::getHash, hash));
+            if (existPicture != null) {
+                return new PictureVO(existPicture.getUrl(), existPicture.getPicSize(), existPicture.getName());
             }
             // 用 hash 生成文件名，防止并发上传同一张图片
             String uploadFileName = String.format("%s.%s", hash, suffix);
@@ -70,8 +70,8 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture> impl
         } catch (DuplicateKeyException e) {
             // 并发触发唯一约束，再次查询图片
             Picture existPic = lambdaQuery()
-                    .eq(Picture::getHash, hash)
                     .eq(Picture::getUserId, userId)
+                    .eq(Picture::getHash, hash)
                     .one();
             if (existPic != null) {
                 return new PictureVO(existPic.getUrl(), existPic.getPicSize(), existPic.getName());
