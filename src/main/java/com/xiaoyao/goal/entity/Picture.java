@@ -2,6 +2,7 @@ package com.xiaoyao.goal.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -88,5 +89,6 @@ public class Picture implements Serializable {
     /**
      * 是否删除
      */
+    @TableLogic
     private Byte isDelete;
 }
