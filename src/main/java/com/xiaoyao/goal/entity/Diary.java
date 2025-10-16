@@ -30,7 +30,7 @@ public class Diary implements Serializable {
     /**
      * 唯一标识
      */
-    @TableId(value = "id", type = IdType.AUTO)
+    @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
 
     /**
