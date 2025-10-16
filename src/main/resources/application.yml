@@ -10,6 +10,10 @@ spring:
   web:
     resources:
       static-locations: classpath:/web/
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 100MB
   threads:
     virtual:
       enabled: true

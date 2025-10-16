@@ -74,7 +74,7 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture> impl
             if (tempFile != null) {
                 boolean deleteResult = tempFile.delete();
                 if (!deleteResult) {
-                    log.error("file delete error,file:{}", tempFile.getAbsolutePath());
+                    log.error("临时文件删除异常,路径:{}", tempFile.getAbsolutePath());
                 }
             }
         }
