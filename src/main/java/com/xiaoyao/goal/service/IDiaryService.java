@@ -45,7 +45,8 @@ public interface IDiaryService extends IService<Diary> {
 
     /**
      * 查询热门标签
+     * @param count 统计数量
      * @return 热门标签集合
      */
-    List<DiaryHotTagsVO> hotTags();
+    List<DiaryHotTagsVO> hotTags(Integer count);
 }

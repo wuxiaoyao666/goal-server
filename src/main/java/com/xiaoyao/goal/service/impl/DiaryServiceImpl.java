@@ -31,7 +31,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -162,30 +161,7 @@ public class DiaryServiceImpl extends ServiceImpl<DiaryMapper, Diary> implements
     }
 
     @Override
-    public List<DiaryHotTagsVO> hotTags() {
-        // 查询当前用户有效日记
-        List<Diary> diaries = list(Wrappers.<Diary>lambdaQuery()
-                .select(Diary::getTags)
-                .eq(Diary::getUserId, StpUtil.getLoginIdAsLong())
-                .isNotNull(Diary::getTags));
-        // 扁平化所有非空标签
-        List<String> tags = diaries.stream()
-                .flatMap(diary -> diary.getTags().stream())
-                .filter(StrUtil::isNotBlank)
-                .toList();
-        if (CollUtil.isEmpty(tags)) {
-            return Collections.emptyList();
-        }
-        // 统计每个标签出现的频率
-        Map<String, Long> tagCountMap = tags.stream()
-                .collect(Collectors.groupingBy(
-                        Function.identity(),
-                        Collectors.counting()
-                ));
-        return tagCountMap.entrySet().stream()
-                .map(entry -> new DiaryHotTagsVO(entry.getKey(), entry.getValue()))
-                .sorted((vo1, vo2) -> Long.compare(vo2.count(), vo1.count())) // 降序
-                //.limit(count) // 取热门标签
-                .toList();
+    public List<DiaryHotTagsVO> hotTags(Integer count) {
+        return baseMapper.selectHotTags(StpUtil.getLoginIdAsLong(), count);
     }
 }

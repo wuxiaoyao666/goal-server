@@ -2,4 +2,31 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xiaoyao.goal.mapper.DiaryMapper">
 
+    <select id="selectHotTags" resultType="com.xiaoyao.goal.entity.vo.DiaryHotTagsVO">
+        WITH RECURSIVE n_list(n) AS (
+        SELECT 0
+        UNION ALL
+        SELECT n + 1
+        FROM n_list
+        WHERE n &lt; ${count}
+        )
+        SELECT tag,
+        COUNT(*) AS count
+        FROM (
+        SELECT d.tags,
+        JSON_LENGTH(d.tags) AS tag_len
+        FROM diary d
+        WHERE d.user_id = ${userId}
+        AND d.tags IS NOT NULL
+        AND JSON_LENGTH(d.tags) > 0
+        ) AS filtered_diary
+        JOIN n_list ON n_list.n &lt; filtered_diary.tag_len
+        CROSS JOIN LATERAL (
+        SELECT JSON_UNQUOTE(JSON_EXTRACT(filtered_diary.tags, CONCAT('$[', n_list.n, ']'))) AS tag
+        ) AS tag_item
+        GROUP BY tag
+        ORDER BY count DESC
+        LIMIT ${count};
+    </select>
+
 </mapper>

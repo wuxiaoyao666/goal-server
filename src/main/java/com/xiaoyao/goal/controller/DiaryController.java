@@ -40,7 +40,7 @@ public class DiaryController {
     }
 
     @GetMapping("/hotTags")
-    public Result hotTags() {
-        return Result.success(diaryService.hotTags());
+    public Result hotTags(@RequestParam(defaultValue = "20") Integer count) {
+        return Result.success(diaryService.hotTags(count));
     }
 }
