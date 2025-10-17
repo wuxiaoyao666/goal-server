@@ -167,8 +167,7 @@ public class DiaryServiceImpl extends ServiceImpl<DiaryMapper, Diary> implements
         List<Diary> diaries = list(Wrappers.<Diary>lambdaQuery()
                 .select(Diary::getTags)
                 .eq(Diary::getUserId, StpUtil.getLoginIdAsLong())
-                .isNotNull(Diary::getTags)
-                .gt(Diary::getTags, Collections.emptyList()));
+                .isNotNull(Diary::getTags));
         // 扁平化所有非空标签
         List<String> tags = diaries.stream()
                 .flatMap(diary -> diary.getTags().stream())
