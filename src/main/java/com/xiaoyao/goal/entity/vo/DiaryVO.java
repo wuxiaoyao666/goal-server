@@ -2,17 +2,12 @@ package com.xiaoyao.goal.entity.vo;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.xiaoyao.goal.constant.GoalConstant;
 import com.xiaoyao.goal.entity.Diary;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 
 import java.util.List;
 
@@ -27,7 +22,6 @@ public class DiaryVO {
     /**
      * 唯一标识
      */
-    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     /**
