@@ -5,7 +5,10 @@ import com.xiaoyao.goal.entity.Diary;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.xiaoyao.goal.entity.dto.SaveDiaryDTO;
 import com.xiaoyao.goal.entity.dto.SearchDiaryDTO;
+import com.xiaoyao.goal.entity.vo.DiaryHotTagsVO;
 import com.xiaoyao.goal.entity.vo.DiaryVO;
+
+import java.util.List;
 
 /**
  * <p>
@@ -39,4 +42,10 @@ public interface IDiaryService extends IService<Diary> {
      * @return
      */
     void delete(Long id);
+
+    /**
+     * 查询热门标签
+     * @return 热门标签集合
+     */
+    List<DiaryHotTagsVO> hotTags();
 }

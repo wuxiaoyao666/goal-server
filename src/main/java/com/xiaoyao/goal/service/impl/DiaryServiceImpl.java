@@ -16,6 +16,7 @@ import com.xiaoyao.goal.entity.Diary;
 import com.xiaoyao.goal.entity.DiaryKeyword;
 import com.xiaoyao.goal.entity.dto.SaveDiaryDTO;
 import com.xiaoyao.goal.entity.dto.SearchDiaryDTO;
+import com.xiaoyao.goal.entity.vo.DiaryHotTagsVO;
 import com.xiaoyao.goal.entity.vo.DiaryVO;
 import com.xiaoyao.goal.mapper.DiaryMapper;
 import com.xiaoyao.goal.service.IDiaryKeywordService;
@@ -29,10 +30,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -78,10 +77,9 @@ public class DiaryServiceImpl extends ServiceImpl<DiaryMapper, Diary> implements
     @Override
     @Transactional
     public DiaryVO sync(SaveDiaryDTO body) {
-        Long userId = StpUtil.getLoginIdAsLong();
         Diary diary = Diary.builder()
                 .id(body.getId())
-                .userId(userId)
+                .userId(StpUtil.getLoginIdAsLong())
                 .title(body.getTitle())
                 .content(body.getContent())
                 .tags(body.getTags()).build();
@@ -161,5 +159,34 @@ public class DiaryServiceImpl extends ServiceImpl<DiaryMapper, Diary> implements
     public void delete(Long id) {
         diaryKeywordService.remove(Wrappers.<DiaryKeyword>lambdaQuery().eq(DiaryKeyword::getDiaryId, id));
         removeById(id);
+    }
+
+    @Override
+    public List<DiaryHotTagsVO> hotTags() {
+        // 查询当前用户有效日记
+        List<Diary> diaries = list(Wrappers.<Diary>lambdaQuery()
+                .select(Diary::getTags)
+                .eq(Diary::getUserId, StpUtil.getLoginIdAsLong())
+                .isNotNull(Diary::getTags)
+                .gt(Diary::getTags, Collections.emptyList()));
+        // 扁平化所有非空标签
+        List<String> tags = diaries.stream()
+                .flatMap(diary -> diary.getTags().stream())
+                .filter(StrUtil::isNotBlank)
+                .toList();
+        if (CollUtil.isEmpty(tags)) {
+            return Collections.emptyList();
+        }
+        // 统计每个标签出现的频率
+        Map<String, Long> tagCountMap = tags.stream()
+                .collect(Collectors.groupingBy(
+                        Function.identity(),
+                        Collectors.counting()
+                ));
+        return tagCountMap.entrySet().stream()
+                .map(entry -> new DiaryHotTagsVO(entry.getKey(), entry.getValue()))
+                .sorted((vo1, vo2) -> Long.compare(vo2.count(), vo1.count())) // 降序
+                //.limit(count) // 取热门标签
+                .toList();
     }
 }

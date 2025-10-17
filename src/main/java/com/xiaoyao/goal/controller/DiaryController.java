@@ -1,16 +1,12 @@
 package com.xiaoyao.goal.controller;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.xiaoyao.goal.entity.dto.SaveDiaryDTO;
 import com.xiaoyao.goal.entity.dto.SearchDiaryDTO;
 import com.xiaoyao.goal.service.IDiaryService;
 import com.xiaoyao.goal.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -41,5 +37,10 @@ public class DiaryController {
     public Result delete(@RequestBody Long id) {
         diaryService.delete(id);
         return Result.success();
+    }
+
+    @GetMapping("/hotTags")
+    public Result hotTags() {
+        return Result.success(diaryService.hotTags());
     }
 }
