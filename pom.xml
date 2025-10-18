@@ -16,6 +16,7 @@
 
     <properties>
         <java.version>25</java.version>
+        <kryo.version>5.6.2</kryo.version>
         <cos.version>5.6.255.1</cos.version>
         <jsonp.version>1.21.2</jsonp.version>
         <hutool.version>5.8.41</hutool.version>
@@ -93,6 +94,11 @@
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-jwt</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.esotericsoftware</groupId>
+            <artifactId>kryo</artifactId>
+            <version>${kryo.version}</version>
         </dependency>
         <!-- 七牛云存储 -->
         <dependency>

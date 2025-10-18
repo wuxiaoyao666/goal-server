@@ -25,6 +25,7 @@ public class UpdateUserDTO {
     /**
      * 头像
      */
+    @NotBlank
     @Pattern(
             regexp = "^(https?|ftp)://[^\\s/$.?#].[^\\s]*$",
             message = "头像链接格式不正确（需为http/https/ftp开头的有效URL）"
