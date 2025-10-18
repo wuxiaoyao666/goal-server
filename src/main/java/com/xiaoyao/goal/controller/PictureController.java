@@ -1,5 +1,6 @@
 package com.xiaoyao.goal.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.stp.StpUtil;
 import com.xiaoyao.goal.service.IPictureService;
 import com.xiaoyao.goal.utils.Result;
@@ -13,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * @author 逍遥
  */
+@SaCheckLogin
 @RestController
 @RequestMapping("/picture")
 public class PictureController {

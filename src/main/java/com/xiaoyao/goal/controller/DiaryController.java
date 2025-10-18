@@ -1,5 +1,6 @@
 package com.xiaoyao.goal.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.xiaoyao.goal.entity.dto.SaveDiaryDTO;
 import com.xiaoyao.goal.entity.dto.SearchDiaryDTO;
 import com.xiaoyao.goal.service.IDiaryService;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
  * @author 逍遥
  * @since 2025-10-08
  */
+@SaCheckLogin
 @RestController
 @RequestMapping("/diary")
 public class DiaryController {

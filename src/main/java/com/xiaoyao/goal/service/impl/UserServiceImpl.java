@@ -1,16 +1,18 @@
 package com.xiaoyao.goal.service.impl;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.xiaoyao.goal.entity.User;
 import com.xiaoyao.goal.entity.dto.RegisterDTO;
+import com.xiaoyao.goal.entity.dto.UpdateUserDTO;
 import com.xiaoyao.goal.exception.BusinessException;
 import com.xiaoyao.goal.mapper.UserMapper;
 import com.xiaoyao.goal.service.IUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xiaoyao.goal.utils.BcryptUtils;
 import com.xiaoyao.goal.utils.ResultCode;
-import com.xiaoyao.goal.entity.vo.UserVO;
+import com.xiaoyao.goal.entity.vo.UserInfoVO;
 import com.xiaoyao.goal.entity.dto.LoginDTO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -27,17 +29,17 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
 
     @Override
-    public UserVO login(LoginDTO param) {
+    public UserInfoVO login(LoginDTO param) {
         // 1. 查询用户
         LambdaQueryWrapper<User> wrapper = Wrappers.lambdaQuery(User.class)
-                .select(User::getId, User::getUsername, User::getPassword, User::getNickname, User::getAvatar)
+                //.select(User::getId, User::getUsername, User::getPassword, User::getNickname, User::getAvatar)
                 .eq(User::getUsername, param.getUsername());
         User user = getOne(wrapper);
         // 2. 用户密码校验
         if (user == null || !BcryptUtils.verify(param.getPassword(), user.getPassword())) {
             throw new BusinessException(ResultCode.USERNAME_PASSWORD_INVALID_EXCEPTION);
         }
-        UserVO userVo = new UserVO();
+        UserInfoVO userVo = new UserInfoVO();
         BeanUtils.copyProperties(user, userVo);
         return userVo;
     }
@@ -48,5 +50,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         BeanUtils.copyProperties(body, user);
         user.setPassword(BcryptUtils.hash(user.getPassword()));
         save(user);
+    }
+
+    @Override
+    public void update(UpdateUserDTO body) {
+        User user = new User();
+        BeanUtils.copyProperties(body, user);
+        user.setId(StpUtil.getLoginIdAsLong());
+        updateById(user);
     }
 }

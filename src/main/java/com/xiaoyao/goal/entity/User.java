@@ -24,7 +24,7 @@ public class User implements Serializable {
      * 编号
      */
     @TableId(value = "id", type = IdType.ASSIGN_ID)
-    private Integer id;
+    private Long id;
 
     /**
      * 用户名
