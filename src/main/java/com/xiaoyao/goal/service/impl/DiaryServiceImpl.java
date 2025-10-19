@@ -6,7 +6,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.crypto.SecureUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -21,8 +21,8 @@ import com.xiaoyao.goal.entity.dto.diary.SearchDiaryDTO;
 import com.xiaoyao.goal.entity.vo.DiaryHotTagsVO;
 import com.xiaoyao.goal.entity.vo.DiaryVO;
 import com.xiaoyao.goal.exception.GoalException;
+import com.xiaoyao.goal.mapper.DiaryKeywordMapper;
 import com.xiaoyao.goal.mapper.DiaryMapper;
-import com.xiaoyao.goal.service.IDiaryKeywordService;
 import com.xiaoyao.goal.service.IDiaryService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xiaoyao.goal.service.export.ExportHandler;
@@ -65,7 +65,7 @@ public class DiaryServiceImpl extends ServiceImpl<DiaryMapper, Diary> implements
     private final Set<String> StopWords = new HashSet<>();
 
     @Autowired
-    private IDiaryKeywordService diaryKeywordService;
+    private DiaryKeywordMapper diaryKeywordMapper;
 
     /**
      * 初始化停用词
@@ -100,7 +100,7 @@ public class DiaryServiceImpl extends ServiceImpl<DiaryMapper, Diary> implements
         }
         if (ObjUtil.isNotNull(body.getId())) {
             // 删除旧关键词关联
-            diaryKeywordService.remove(Wrappers.<DiaryKeyword>lambdaQuery().eq(DiaryKeyword::getDiaryId, body.getId()));
+            diaryKeywordMapper.delete(Wrappers.<DiaryKeyword>lambdaQuery().eq(DiaryKeyword::getDiaryId, body.getId()));
         }
         // 生成盲索引
         Set<DiaryKeyword> diaryKeywords = new HashSet<>();
@@ -111,12 +111,13 @@ public class DiaryServiceImpl extends ServiceImpl<DiaryMapper, Diary> implements
             if (StrUtil.isNotBlank(word) && StrUtil.isNotBlank(nature) && !StopWords.contains(word) && !StopNatures.contains(nature)) {
                 diaryKeywords.add(DiaryKeyword.builder()
                         .diaryId(diary.getId())
-                        .keywordHash(SecureUtil.md5(word))
+                        .word(word.trim().toLowerCase())
                         .build());
             }
         });
         if (CollUtil.isNotEmpty(diaryKeywords)) {
-            diaryKeywordService.saveBatch(diaryKeywords);
+            System.out.println(JSONUtil.toJsonStr(diaryKeywords));
+            diaryKeywordMapper.insert(diaryKeywords);
         }
         return DiaryVO.toDiaryVO(getById(diary.getId()));
     }
@@ -128,16 +129,12 @@ public class DiaryServiceImpl extends ServiceImpl<DiaryMapper, Diary> implements
             List<Term> terms = HanLP.segment(body.getKeyword());
             // 提取分词结果
             Set<String> keywordSet = terms.stream()
-                    .map(term -> SecureUtil.md5(term.word))
+                    .map(term -> term.word)
                     .filter(StrUtil::isNotBlank)
                     .collect(Collectors.toSet());
-            List<DiaryKeyword> diaryKeywords = diaryKeywordService.list(
-                    new LambdaQueryWrapper<DiaryKeyword>()
-                            .in(DiaryKeyword::getKeywordHash, keywordSet)
-            );
-            if (diaryKeywords.isEmpty()) return new Page<>(body.getCurrent(), body.getLimit());
-            // 提取命中的 ID
-            Set<Long> diaryIds = diaryKeywords.stream().map(DiaryKeyword::getDiaryId).collect(Collectors.toSet());
+            // 查询索引表
+            Set<Long> diaryIds = diaryKeywordMapper.selectDistinctDiaryIdsByWords(keywordSet);
+            if (diaryIds.isEmpty()) return new Page<>(body.getCurrent(), body.getLimit());
             diaryPage = page(
                     new Page<>(body.getCurrent(), body.getLimit()),
                     new LambdaQueryWrapper<Diary>()
@@ -164,7 +161,7 @@ public class DiaryServiceImpl extends ServiceImpl<DiaryMapper, Diary> implements
     @Override
     @Transactional
     public void delete(Long id) {
-        diaryKeywordService.remove(Wrappers.<DiaryKeyword>lambdaQuery().eq(DiaryKeyword::getDiaryId, id));
+        diaryKeywordMapper.delete(Wrappers.<DiaryKeyword>lambdaQuery().eq(DiaryKeyword::getDiaryId, id));
         removeById(id);
     }
 
