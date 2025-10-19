@@ -7,10 +7,10 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xiaoyao.goal.constant.GoalConstant;
 import com.xiaoyao.goal.entity.bo.TimeBO;
-import com.xiaoyao.goal.entity.dto.CreateTaskDTO;
-import com.xiaoyao.goal.entity.dto.FinishTaskDTO;
-import com.xiaoyao.goal.entity.dto.QueryTaskDTO;
-import com.xiaoyao.goal.entity.dto.RetrospectiveDTO;
+import com.xiaoyao.goal.entity.dto.task.CreateTaskDTO;
+import com.xiaoyao.goal.entity.dto.task.FinishTaskDTO;
+import com.xiaoyao.goal.entity.dto.task.QueryTaskDTO;
+import com.xiaoyao.goal.entity.dto.task.RetrospectiveDTO;
 import com.xiaoyao.goal.entity.Task;
 import com.xiaoyao.goal.entity.vo.MaxDurationTagVO;
 import com.xiaoyao.goal.entity.vo.RetrospectiveRowVO;
@@ -132,7 +132,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
             String secondTag = Optional.ofNullable(task.getSecondTag()).orElse(GoalConstant.NoTag);
 
             // 聚合主标签数据
-            FirstTagData firstTagData = firstTagMap.computeIfAbsent(firstTag, k -> new FirstTagData());
+            FirstTagData firstTagData = firstTagMap.computeIfAbsent(firstTag, _ -> new FirstTagData());
 
             // 合并同名子标签并累加时长
             firstTagData.secondTagMap.merge(

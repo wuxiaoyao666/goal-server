@@ -2,6 +2,7 @@ package com.xiaoyao.goal.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
@@ -14,15 +15,20 @@ import com.hankcs.hanlp.HanLP;
 import com.hankcs.hanlp.seg.common.Term;
 import com.xiaoyao.goal.entity.Diary;
 import com.xiaoyao.goal.entity.DiaryKeyword;
-import com.xiaoyao.goal.entity.dto.SaveDiaryDTO;
-import com.xiaoyao.goal.entity.dto.SearchDiaryDTO;
+import com.xiaoyao.goal.entity.dto.diary.ExportDiaryDTO;
+import com.xiaoyao.goal.entity.dto.diary.SaveDiaryDTO;
+import com.xiaoyao.goal.entity.dto.diary.SearchDiaryDTO;
 import com.xiaoyao.goal.entity.vo.DiaryHotTagsVO;
 import com.xiaoyao.goal.entity.vo.DiaryVO;
+import com.xiaoyao.goal.exception.GoalException;
 import com.xiaoyao.goal.mapper.DiaryMapper;
 import com.xiaoyao.goal.service.IDiaryKeywordService;
 import com.xiaoyao.goal.service.IDiaryService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.xiaoyao.goal.service.export.ExportHandler;
+import com.xiaoyao.goal.service.export.ExportHandlerFactory;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -30,6 +36,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -163,5 +171,30 @@ public class DiaryServiceImpl extends ServiceImpl<DiaryMapper, Diary> implements
     @Override
     public List<DiaryHotTagsVO> hotTags(Integer count) {
         return baseMapper.selectHotTags(StpUtil.getLoginIdAsLong(), count);
+    }
+
+    @Override
+    public void export(ExportDiaryDTO body, HttpServletResponse response) {
+        // 查询符合条件的日记
+        LambdaQueryWrapper<Diary> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Diary::getUserId, StpUtil.getLoginIdAsLong());
+        if (ObjUtil.isNotNull(body.getStartTime())) wrapper.ge(Diary::getCreateTime, body.getStartTime());
+        if (ObjUtil.isNotNull(body.getEndTime())) wrapper.le(Diary::getCreateTime, body.getEndTime());
+        List<Diary> diaries = list(wrapper);
+        if (CollUtil.isEmpty(diaries)) throw new GoalException("未查询到符合条件的日记。");
+        // 导出日记
+        ExportHandler handler = ExportHandlerFactory.getHandler(body.getType());
+        byte[] exportDiaries = handler.export(diaries);
+        response.setContentType(handler.getContentType());
+        String filename = DateUtil.format(new Date(), "yyyyMMddHHmmss") + body.getType().getValue();
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
+        response.setContentLength(exportDiaries.length);
+        // 写入响应流
+        try (OutputStream os = response.getOutputStream()) {
+            os.write(exportDiaries);
+            os.flush();
+        } catch (IOException e) {
+            throw new GoalException(String.format("导出失败: %s", e.getMessage()));
+        }
     }
 }

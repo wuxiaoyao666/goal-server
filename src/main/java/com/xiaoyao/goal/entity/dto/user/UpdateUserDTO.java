@@ -1,4 +1,4 @@
-package com.xiaoyao.goal.entity.dto;
+package com.xiaoyao.goal.entity.dto.user;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;

@@ -3,7 +3,7 @@ package com.xiaoyao.goal.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.xiaoyao.goal.entity.Tag;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.xiaoyao.goal.entity.dto.QueryTagDTO;
+import com.xiaoyao.goal.entity.dto.tag.QueryTagDTO;
 import com.xiaoyao.goal.entity.vo.TagVO;
 
 import java.util.List;
@@ -32,7 +32,7 @@ public interface ITagService extends IService<Tag> {
 
     /**
      * 删除标题
-     * @param id
+     * @param id 唯一标识
      */
     void delete(Long id);
 }

@@ -1,4 +1,4 @@
-package com.xiaoyao.goal.entity.dto;
+package com.xiaoyao.goal.entity.dto.user;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

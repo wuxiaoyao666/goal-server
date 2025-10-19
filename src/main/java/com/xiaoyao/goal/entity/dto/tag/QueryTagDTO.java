@@ -1,4 +1,4 @@
-package com.xiaoyao.goal.entity.dto;
+package com.xiaoyao.goal.entity.dto.tag;
 
 import com.xiaoyao.goal.constant.GoalConstant;
 import lombok.Data;

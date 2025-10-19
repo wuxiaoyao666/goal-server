@@ -1,4 +1,4 @@
-package com.xiaoyao.goal.entity.dto;
+package com.xiaoyao.goal.entity.dto.tag;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

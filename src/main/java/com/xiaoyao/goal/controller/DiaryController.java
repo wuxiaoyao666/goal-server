@@ -1,10 +1,12 @@
 package com.xiaoyao.goal.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
-import com.xiaoyao.goal.entity.dto.SaveDiaryDTO;
-import com.xiaoyao.goal.entity.dto.SearchDiaryDTO;
+import com.xiaoyao.goal.entity.dto.diary.ExportDiaryDTO;
+import com.xiaoyao.goal.entity.dto.diary.SaveDiaryDTO;
+import com.xiaoyao.goal.entity.dto.diary.SearchDiaryDTO;
 import com.xiaoyao.goal.service.IDiaryService;
 import com.xiaoyao.goal.utils.Result;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -44,5 +46,11 @@ public class DiaryController {
     @GetMapping("/hotTags")
     public Result hotTags(@RequestParam(defaultValue = "20") Integer count) {
         return Result.success(diaryService.hotTags(count));
+    }
+
+    @PostMapping("export")
+    public Result export(@RequestBody ExportDiaryDTO body, HttpServletResponse response) {
+        diaryService.export(body, response);
+        return Result.success();
     }
 }

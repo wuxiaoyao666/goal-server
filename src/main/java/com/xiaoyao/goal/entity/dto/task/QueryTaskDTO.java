@@ -1,4 +1,4 @@
-package com.xiaoyao.goal.entity.dto;
+package com.xiaoyao.goal.entity.dto.task;
 
 import com.xiaoyao.goal.constant.GoalConstant;
 import com.xiaoyao.goal.enums.TaskStatus;

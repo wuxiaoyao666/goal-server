@@ -1,10 +1,10 @@
 package com.xiaoyao.goal.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
-import com.xiaoyao.goal.entity.dto.CreateTaskDTO;
-import com.xiaoyao.goal.entity.dto.FinishTaskDTO;
-import com.xiaoyao.goal.entity.dto.QueryTaskDTO;
-import com.xiaoyao.goal.entity.dto.RetrospectiveDTO;
+import com.xiaoyao.goal.entity.dto.task.CreateTaskDTO;
+import com.xiaoyao.goal.entity.dto.task.FinishTaskDTO;
+import com.xiaoyao.goal.entity.dto.task.QueryTaskDTO;
+import com.xiaoyao.goal.entity.dto.task.RetrospectiveDTO;
 import com.xiaoyao.goal.service.ITaskService;
 import com.xiaoyao.goal.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;

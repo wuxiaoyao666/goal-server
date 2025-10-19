@@ -2,10 +2,10 @@ package com.xiaoyao.goal.service;
 
 import com.xiaoyao.goal.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.xiaoyao.goal.entity.dto.RegisterDTO;
-import com.xiaoyao.goal.entity.dto.UpdateUserDTO;
+import com.xiaoyao.goal.entity.dto.user.RegisterDTO;
+import com.xiaoyao.goal.entity.dto.user.UpdateUserDTO;
 import com.xiaoyao.goal.entity.vo.UserInfoVO;
-import com.xiaoyao.goal.entity.dto.LoginDTO;
+import com.xiaoyao.goal.entity.dto.user.LoginDTO;
 
 /**
  * <p>

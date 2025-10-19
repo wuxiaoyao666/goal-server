@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xiaoyao.goal.entity.Tag;
-import com.xiaoyao.goal.entity.dto.QueryTagDTO;
+import com.xiaoyao.goal.entity.dto.tag.QueryTagDTO;
 import com.xiaoyao.goal.mapper.TagMapper;
 import com.xiaoyao.goal.service.ITagService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;

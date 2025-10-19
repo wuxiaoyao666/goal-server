@@ -3,10 +3,10 @@ package com.xiaoyao.goal.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.xiaoyao.goal.entity.bo.TimeBO;
-import com.xiaoyao.goal.entity.dto.CreateTaskDTO;
-import com.xiaoyao.goal.entity.dto.FinishTaskDTO;
-import com.xiaoyao.goal.entity.dto.QueryTaskDTO;
-import com.xiaoyao.goal.entity.dto.RetrospectiveDTO;
+import com.xiaoyao.goal.entity.dto.task.CreateTaskDTO;
+import com.xiaoyao.goal.entity.dto.task.FinishTaskDTO;
+import com.xiaoyao.goal.entity.dto.task.QueryTaskDTO;
+import com.xiaoyao.goal.entity.dto.task.RetrospectiveDTO;
 import com.xiaoyao.goal.entity.Task;
 import com.xiaoyao.goal.entity.vo.RetrospectiveVO;
 

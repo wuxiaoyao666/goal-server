@@ -1,9 +1,8 @@
-package com.xiaoyao.goal.entity.dto;
+package com.xiaoyao.goal.entity.dto.diary;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-import java.time.LocalDate;
 import java.util.List;
 
 /**
