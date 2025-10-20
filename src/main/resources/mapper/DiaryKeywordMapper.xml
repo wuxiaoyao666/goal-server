@@ -2,4 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xiaoyao.goal.mapper.DiaryKeywordMapper">
 
+    <select id="selectDistinctDiaryIdsByWords" resultType="java.lang.Long">
+        SELECT DISTINCT diary_id
+        FROM diary_keyword
+        WHERE word IN
+        <foreach item="word" collection="words" open="(" separator="," close=")">
+            #{word}
+        </foreach>
+    </select>
 </mapper>

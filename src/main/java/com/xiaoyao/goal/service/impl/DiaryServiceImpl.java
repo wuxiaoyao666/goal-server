@@ -125,6 +125,7 @@ public class DiaryServiceImpl extends ServiceImpl<DiaryMapper, Diary> implements
     @Override
     public IPage<DiaryVO> search(SearchDiaryDTO body) {
         IPage<Diary> diaryPage;
+        Set<Long> diaryIds = null;
         if (StrUtil.isNotBlank(body.getKeyword())) {
             List<Term> terms = HanLP.segment(body.getKeyword());
             // 提取分词结果
@@ -133,23 +134,18 @@ public class DiaryServiceImpl extends ServiceImpl<DiaryMapper, Diary> implements
                     .filter(StrUtil::isNotBlank)
                     .collect(Collectors.toSet());
             // 查询索引表
-            Set<Long> diaryIds = diaryKeywordMapper.selectDistinctDiaryIdsByWords(keywordSet);
+            diaryIds = diaryKeywordMapper.selectDistinctDiaryIdsByWords(keywordSet);
             if (diaryIds.isEmpty()) return new Page<>(body.getCurrent(), body.getLimit());
-            diaryPage = page(
-                    new Page<>(body.getCurrent(), body.getLimit()),
-                    new LambdaQueryWrapper<Diary>()
-                            .in(Diary::getId, diaryIds)
-                            .eq(Diary::getUserId, StpUtil.getLoginIdAsLong())
-                            .orderByDesc(Diary::getCreateTime)
-            );
-        } else {
-            diaryPage = page(
-                    new Page<>(body.getCurrent(), body.getLimit()),
-                    new LambdaQueryWrapper<Diary>()
-                            .eq(Diary::getUserId, StpUtil.getLoginIdAsLong())
-                            .orderByDesc(Diary::getCreateTime)
-            );
         }
+        diaryPage = page(
+                new Page<>(body.getCurrent(), body.getLimit()),
+                new LambdaQueryWrapper<Diary>()
+                        .eq(Diary::getUserId, StpUtil.getLoginIdAsLong())
+                        .in(CollUtil.isNotEmpty(diaryIds), Diary::getId, diaryIds)
+                        .ge(ObjUtil.isNotNull(body.getStartTime()), Diary::getCreateTime, body.getStartTime())
+                        .le(ObjUtil.isNotNull(body.getEndTime()), Diary::getCreateTime, body.getEndTime())
+                        .orderByDesc(Diary::getCreateTime)
+        );
         List<DiaryVO> diaryData = diaryPage.getRecords().stream()
                 .map(DiaryVO::toDiaryVO).toList();
         IPage<DiaryVO> result = new Page<>(body.getCurrent(), body.getLimit());
