@@ -30,10 +30,9 @@ services:
       - 6379:6379
     command: redis-server /etc/redis/redis.conf
   minio:
-    image: minio/minio:RELEASE.2025-10-15T17-29-55Z
+    image: minio/minio
     container_name: minio
-    hostname: minio  # 容器主机名
-    restart: always
+    restart: unless-stopped
     ports:
       - 9100:9100
       - 9001:9001
